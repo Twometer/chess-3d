@@ -1,0 +1,61 @@
+[
+  {
+    "name": "pawn",
+    "move": [
+      "0,1"
+    ],
+    "infinite": false,
+    "hit": [
+      "-1,1",
+      "1,1"
+    ],
+    "model": "pawn-{color}.obj"
+  },
+  {
+    "name": "king",
+    "infinite": false,
+    "model": "king-{color}.obj"
+  },
+  {
+    "name": "queen",
+    "infinite": true,
+    "model": "queen-{color}.obj"
+  },
+  {
+    "name": "rook",
+    "move": [
+      "-1,0",
+      "1,0",
+      "0,-1",
+      "0,1"
+    ],
+    "infinite": true,
+    "model": "rook-{color}.obj"
+  },
+  {
+    "name": "bishop",
+    "move": [
+      "-1,-1",
+      "1,1",
+      "-1,1",
+      "1,-1"
+    ],
+    "infinite": true,
+    "model": "bishop-{color}.obj"
+  },
+  {
+    "name": "knight",
+    "move": [
+      "-1,2",
+      "1,2",
+      "-1,-2",
+      "1,-2",
+      "-2,1",
+      "2,1",
+      "-2,-1",
+      "2,-1"
+    ],
+    "infinite": false,
+    "model": "knight-{color}.obj"
+  }
+]

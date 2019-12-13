@@ -4,6 +4,8 @@ project(chess_3d)
 set(CMAKE_CXX_STANDARD 14)
 
 add_subdirectory(glm)
+add_subdirectory(glfw)
+
 include_directories(${CMAKE_SOURCE_DIR}/inc)
 link_directories(${CMAKE_SOURCE_DIR}/lib)
 add_executable(chess_3d ext/glad.c src/main.cpp)
