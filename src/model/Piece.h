@@ -5,29 +5,23 @@
 #ifndef CHESS_3D_PIECE_H
 #define CHESS_3D_PIECE_H
 
-#include <string>
-#include <vector>
-#include <glm/glm.hpp>
-#include <nlohmann/json.hpp>
-#include "Board.h"
+#include "PieceType.h"
 #include "Team.h"
-#include "MoveResult.h"
+#include "Rule.h"
 
-class Piece {
+class Rule;
 
-private:
-    std::string name;
-    std::string model;
-    std::vector<glm::vec2> moves;
-    std::vector<glm::vec2> hit;
-    bool infinite;
-    bool mayJump;
+struct Piece {
 
-public:
+    Rule *rule;
+    PieceType type;
+    Team team;
 
-    static Piece *Load(nlohmann::json &json, std::string &name);
-
-    MoveResult ValidateMove(Board *board, Team team, glm::vec2 from, glm::vec2 to);
+    Piece(Rule *rule, PieceType type, Team team) {
+        this->rule = rule;
+        this->type = type;
+        this->team = team;
+    }
 
 };
 

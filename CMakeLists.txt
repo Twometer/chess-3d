@@ -8,7 +8,7 @@ add_subdirectory(libs/glm/glm)
 add_subdirectory(libs/glfw)
 add_subdirectory(libs/json)
 
-add_executable(chess_3d ext/glad.c src/main.cpp src/model/Piece.cpp src/model/Piece.h src/model/Team.h src/model/Board.cpp src/model/Board.h src/model/MoveResult.h)
+add_executable(chess_3d ext/glad.c src/main.cpp src/model/Rule.cpp src/model/Rule.h src/model/Team.h src/model/Board.cpp src/model/Board.h src/model/MoveResult.h src/model/Piece.cpp src/model/Piece.h src/model/Ruleset.cpp src/model/Ruleset.h src/model/PieceType.h)
 target_include_directories(chess_3d PRIVATE libs/glm libs/glfw/include inc)
 target_link_libraries(chess_3d glfw ${GLFW_LIBRARIES} nlohmann_json::nlohmann_json)
 

@@ -8,18 +8,15 @@
     "hit": [
       "-1,1",
       "1,1"
-    ],
-    "model": "pawn-{color}.obj"
+    ]
   },
   {
     "name": "king",
-    "infinite": false,
-    "model": "king-{color}.obj"
+    "infinite": false
   },
   {
     "name": "queen",
-    "infinite": true,
-    "model": "queen-{color}.obj"
+    "infinite": true
   },
   {
     "name": "rook",
@@ -29,8 +26,7 @@
       "0,-1",
       "0,1"
     ],
-    "infinite": true,
-    "model": "rook-{color}.obj"
+    "infinite": true
   },
   {
     "name": "bishop",
@@ -40,8 +36,7 @@
       "-1,1",
       "1,-1"
     ],
-    "infinite": true,
-    "model": "bishop-{color}.obj"
+    "infinite": true
   },
   {
     "name": "knight",
@@ -56,7 +51,6 @@
       "2,-1"
     ],
     "mayJump": true,
-    "infinite": false,
-    "model": "knight-{color}.obj"
+    "infinite": false
   }
 ]

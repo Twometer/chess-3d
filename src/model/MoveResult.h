@@ -13,7 +13,18 @@ struct MoveResult {
 
     bool hit;
 
-    glm::vec2 hitPosition;
+    glm::vec2 hitPosition{};
+
+    explicit MoveResult(bool allowed) {
+        this->allowed = allowed;
+        this->hit = false;
+    }
+
+    MoveResult(bool allowed, glm::vec2 hitPosition) {
+        this->allowed = allowed;
+        this->hit = true;
+        this->hitPosition = hitPosition;
+    }
 
 };
 
