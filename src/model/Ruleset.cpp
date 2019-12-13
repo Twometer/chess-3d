@@ -3,7 +3,7 @@
 //
 #include <exception>
 #include <iostream>
-#include <fstream>
+#include "../util/Loader.h"
 #include "Ruleset.h"
 
 using namespace nlohmann;
@@ -11,8 +11,7 @@ using namespace nlohmann;
 Ruleset *Ruleset::Load(const std::string &path) {
     auto *ruleset = new Ruleset();
 
-    std::ifstream stream(path);
-    std::string content((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());
+    std::string content = Loader::LoadFromFile(path);
     json file = json::parse(content);
     for (json &item : file) {
         Rule *rule = Rule::Load(item);

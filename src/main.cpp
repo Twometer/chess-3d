@@ -3,16 +3,20 @@
 #include <GLFW/glfw3.h>
 #include "model/Board.h"
 #include "model/Ruleset.h"
+#include "util/Logger.h"
 
 using namespace std;
 
 int main() {
+    Logger::Info("Loading ruleset...");
     Ruleset *ruleset = Ruleset::Load("assets/rules.json");
     auto *board = new Board(ruleset);
     board->Initialize();
 
-    if (!glfwInit())
+    if (!glfwInit()) {
+        Logger::Error("Failed to initialize GLFW");
         return 1;
+    }
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -21,19 +25,19 @@ int main() {
 
     GLFWwindow *window = glfwCreateWindow(800, 600, "3D Chess", nullptr, nullptr);
     if (!window) {
-        cout << "Failed to create GLFW window" << endl;
+        Logger::Error("Failed to create GLFW window");
         glfwTerminate();
         return 1;
     }
     glfwMakeContextCurrent(window);
 
     if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
-        cout << "Failed to initialize OpenGL" << endl;
+        Logger::Error("Failed to initialize OpenGL");
         glfwTerminate();
         return 1;
     }
 
-    cout << "Successfully initialized" << endl;
+    Logger::Info("Successfully initialized");
 
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
