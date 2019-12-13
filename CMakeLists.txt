@@ -3,12 +3,13 @@ project(chess_3d)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_subdirectory(glm)
-add_subdirectory(glfw)
+add_subdirectory(libs/glm/glm)
+add_subdirectory(libs/glfw)
 
-include_directories(${CMAKE_SOURCE_DIR}/inc)
-link_directories(${CMAKE_SOURCE_DIR}/lib)
-add_executable(chess_3d ext/glad.c src/main.cpp)
+add_executable(chess_3d ext/glad.c src/main.cpp src/model/Piece.cpp src/model/Piece.h src/model/Team.h src/model/Board.cpp src/model/Board.h src/model/MoveResult.h)
+target_include_directories(chess_3d PRIVATE libs/glm libs/glfw/include inc)
+target_link_libraries(chess_3d glfw ${GLFW_LIBRARIES})
+
 
 # Asset copying
 macro(configure_files srcDir destDir)
