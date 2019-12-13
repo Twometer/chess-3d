@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include <glm/glm.hpp>
+#include <nlohmann/json.hpp>
 #include "Board.h"
 #include "Team.h"
 #include "MoveResult.h"
@@ -24,9 +25,9 @@ private:
 
 public:
 
-    static Piece* Load(std::string & name);
+    static Piece *Load(nlohmann::json &json, std::string &name);
 
-    MoveResult ValidateMove(Board* board, Team team, glm::vec2 from, glm::vec2 to);
+    MoveResult ValidateMove(Board *board, Team team, glm::vec2 from, glm::vec2 to);
 
 };
 

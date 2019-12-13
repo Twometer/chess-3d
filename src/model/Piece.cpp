@@ -21,3 +21,8 @@ MoveResult Piece::ValidateMove(Board *board, Team team, glm::vec2 from, glm::vec
 
     return result;
 }
+
+Piece *Piece::Load(nlohmann::json &json, std::string &name) {
+
+    return nullptr;
+}
