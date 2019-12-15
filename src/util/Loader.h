@@ -8,6 +8,8 @@
 #include <glad/glad.h>
 #include <string>
 
+#include "../gl/Model.h"
+
 class Loader {
 
 public:
@@ -15,6 +17,7 @@ public:
 
     static GLuint LoadShader(const std::string &name);
 
+    static Model* LoadModel(const std::string &name);
 };
 
 

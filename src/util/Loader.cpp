@@ -4,7 +4,12 @@
 
 #include "Loader.h"
 #include "Logger.h"
+#include "Buffer.h"
+#include "../gl/Mesh.h"
 #include <fstream>
+#include <glm/vec3.hpp>
+
+constexpr int STL_HEADER_SIZE = 80;
 
 std::string Loader::LoadFromFile(const std::string &path) {
     std::ifstream stream(path);
@@ -41,3 +46,27 @@ GLuint Loader::LoadShader(const std::string &name) {
 
     return program;
 }
+
+Model *Loader::LoadModel(const std::string &name) {
+    const char *path = ("assets/models/" + name + ".stl").c_str();
+    FILE* file = fopen(path, "r");
+    long size = ftell(file);
+    auto* buf = new uint8_t[size];
+    fread(buf, sizeof(uint8_t), size, file);
+    fclose(file);
+
+    Mesh mesh;
+    Buffer buffer(buf);
+    buffer.Skip(STL_HEADER_SIZE);
+
+    int triangles = buffer.ReadUINT32();
+    for (int i = 0; i < triangles; i++){
+        uint16_t attrCount = buffer.ReadUINT16();
+        if (attrCount != 0)
+            throw std::runtime_error("Unsupported STL format");
+    }
+
+    delete[] buf;
+    return mesh.CreateModel();
+}
+
