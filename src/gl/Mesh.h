@@ -5,11 +5,12 @@
 #ifndef CHESS_3D_MESH_H
 #define CHESS_3D_MESH_H
 
-#include "Model.h"
 #include <glad/glad.h>
 #include <vector>
 #include <glm/vec3.hpp>
+#include "Model.h"
 
+class Model;
 class Mesh {
 private:
     std::vector<GLfloat> vertices;

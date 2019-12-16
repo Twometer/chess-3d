@@ -6,13 +6,17 @@
 #define CHESS_3D_MODEL_H
 
 #include <glad/glad.h>
+#include "Mesh.h"
 
+class Mesh;
 class Model {
 
 private:
     GLuint vaoId;
 
 public:
+    static Model *Create(Mesh *mesh);
+
     void Draw();
 
 };

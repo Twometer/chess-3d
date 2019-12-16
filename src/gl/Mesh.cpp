@@ -17,5 +17,5 @@ void Mesh::AddNormal(glm::vec3 normal) {
 }
 
 Model *Mesh::CreateModel() {
-    return nullptr;
+    return Model::Create(this);
 }

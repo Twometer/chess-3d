@@ -4,6 +4,7 @@
 #include "model/Board.h"
 #include "model/Ruleset.h"
 #include "util/Logger.h"
+#include "util/Loader.h"
 
 using namespace std;
 
@@ -12,6 +13,8 @@ int main() {
     Ruleset *ruleset = Ruleset::Load("assets/rules.json");
     auto *board = new Board(ruleset);
     board->Initialize();
+
+    Loader::LoadModel("bishop.stl");
 
     if (!glfwInit()) {
         Logger::Error("Failed to initialize GLFW");

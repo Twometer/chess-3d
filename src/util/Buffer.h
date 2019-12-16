@@ -5,30 +5,31 @@
 #ifndef CHESS_3D_BUFFER_H
 #define CHESS_3D_BUFFER_H
 
-
 #include <cstdint>
 
 class Buffer {
 
 private:
-    uint8_t* data;
+    uint8_t *data;
 
     int offset;
 
-    void Read(void *data, int len);
-
 public:
-    explicit Buffer(uint8_t *data);
+    explicit Buffer(uint8_t *data) {
+        this->data = data;
+        this->offset = 0;
+    }
 
-    uint16_t ReadUInt16();
+    template<class T>
+    T Read() {
+        T *t = (T *) (data + offset);
+        offset += sizeof(T);
+        return *t;
+    }
 
-    uint32_t ReadUInt32();
-
-    float ReadFloat();
-
-    void Skip(int n);
-
-
+    void Skip(int n) {
+        offset += n;
+    }
 
 };
 

@@ -3,3 +3,11 @@
 //
 
 #include "Model.h"
+
+Model *Model::Create(Mesh *mesh) {
+    return nullptr;
+}
+
+void Model::Draw() {
+
+}

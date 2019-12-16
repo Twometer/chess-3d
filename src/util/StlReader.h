@@ -7,6 +7,7 @@
 
 #include <glm/vec3.hpp>
 #include "../gl/Model.h"
+#include "Buffer.h"
 
 class StlReader {
 

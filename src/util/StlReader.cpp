@@ -2,7 +2,6 @@
 // Created by Twometer on 16/12/2019.
 //
 
-#include <stdexcept>
 #include "../gl/Mesh.h"
 #include "Buffer.h"
 #include "StlReader.h"
@@ -14,7 +13,7 @@ Model *StlReader::Load(uint8_t *buf) {
     Buffer buffer(buf);
     buffer.Skip(STL_HEADER_SIZE);
 
-    int triangles = buffer.ReadUInt32();
+    int triangles = buffer.Read<uint32_t>();
     for (int i = 0; i < triangles; i++) {
         glm::vec3 normal = ReadVec3(buffer);
 
@@ -24,13 +23,12 @@ Model *StlReader::Load(uint8_t *buf) {
             mesh.AddVertex(vertex);
         }
 
-        uint16_t attrCount = buffer.ReadUInt16();
-        if (attrCount != 0)
-            throw std::runtime_error("Unsupported STL format");
+        // Skip the "attribute byte count"
+        buffer.Skip(2);
     }
     return mesh.CreateModel();
 }
 
 glm::vec3 StlReader::ReadVec3(Buffer &buf) {
-    return glm::vec3(buf.ReadFloat(), buf.ReadFloat(), buf.ReadFloat());
+    return glm::vec3(buf.Read<float>(), buf.Read<float>(), buf.Read<float>());
 }
