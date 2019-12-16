@@ -13,7 +13,9 @@
 class Loader {
 
 public:
-    static std::string LoadFromFile(const std::string &path);
+    static std::string ReadAllText(const std::string &path);
+
+    static uint8_t* ReadAllBytes(const std::string &path);
 
     static GLuint LoadShader(const std::string &name);
 

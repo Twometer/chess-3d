@@ -13,16 +13,18 @@ class Buffer {
 private:
     uint8_t* data;
 
-    int idx;
+    int offset;
+
+    void Read(void *data, int len);
 
 public:
-    Buffer(uint8_t *data);
+    explicit Buffer(uint8_t *data);
 
-    uint16_t ReadUINT16();
+    uint16_t ReadUInt16();
 
-    uint32_t ReadUINT32();
+    uint32_t ReadUInt32();
 
-    float ReadREAL32();
+    float ReadFloat();
 
     void Skip(int n);
 

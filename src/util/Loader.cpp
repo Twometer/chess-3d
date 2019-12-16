@@ -4,22 +4,32 @@
 
 #include "Loader.h"
 #include "Logger.h"
-#include "Buffer.h"
+#include "StlReader.h"
 #include "../gl/Mesh.h"
 #include <fstream>
-#include <glm/vec3.hpp>
 
-constexpr int STL_HEADER_SIZE = 80;
+uint8_t *Loader::ReadAllBytes(const std::string &path) {
+    std::ifstream file(path);
+    file.seekg(0, std::ios::end);
+    size_t length = file.tellg();
+    file.seekg(0, std::ios::beg);
 
-std::string Loader::LoadFromFile(const std::string &path) {
+    auto *buf = new uint8_t[length];
+    file.read((char *) buf, length);
+
+    file.close();
+    return buf;
+}
+
+std::string Loader::ReadAllText(const std::string &path) {
     std::ifstream stream(path);
     std::string content((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());
     return content;
 }
 
 GLuint Loader::LoadShader(const std::string &name) {
-    const char *vertSource = LoadFromFile("assets/" + name + ".v.glsl").c_str();
-    const char *fragSource = LoadFromFile("assets/" + name + ".f.glsl").c_str();
+    const char *vertSource = ReadAllText("assets/" + name + ".v.glsl").c_str();
+    const char *fragSource = ReadAllText("assets/" + name + ".f.glsl").c_str();
 
     GLuint program = glCreateProgram();
 
@@ -48,25 +58,9 @@ GLuint Loader::LoadShader(const std::string &name) {
 }
 
 Model *Loader::LoadModel(const std::string &name) {
-    const char *path = ("assets/models/" + name + ".stl").c_str();
-    FILE* file = fopen(path, "r");
-    long size = ftell(file);
-    auto* buf = new uint8_t[size];
-    fread(buf, sizeof(uint8_t), size, file);
-    fclose(file);
-
-    Mesh mesh;
-    Buffer buffer(buf);
-    buffer.Skip(STL_HEADER_SIZE);
-
-    int triangles = buffer.ReadUINT32();
-    for (int i = 0; i < triangles; i++){
-        uint16_t attrCount = buffer.ReadUINT16();
-        if (attrCount != 0)
-            throw std::runtime_error("Unsupported STL format");
-    }
-
+    uint8_t *buf = ReadAllBytes("assets/models/" + name + ".stl");
+    Model *model = StlReader::Load(buf);
     delete[] buf;
-    return mesh.CreateModel();
+    return model;
 }
 

@@ -11,7 +11,7 @@ using namespace nlohmann;
 Ruleset *Ruleset::Load(const std::string &path) {
     auto *ruleset = new Ruleset();
 
-    std::string content = Loader::LoadFromFile(path);
+    std::string content = Loader::ReadAllText(path);
     json file = json::parse(content);
     for (json &item : file) {
         Rule *rule = Rule::Load(item);

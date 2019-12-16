@@ -23,7 +23,7 @@ int main() {
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    GLFWwindow *window = glfwCreateWindow(800, 600, "3D Chess", nullptr, nullptr);
+    GLFWwindow *window = glfwCreateWindow(1000, 700, "3D Chess", nullptr, nullptr);
     if (!window) {
         Logger::Error("Failed to create GLFW window");
         glfwTerminate();
