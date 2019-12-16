@@ -2,13 +2,16 @@
 // Created by Twometer on 16/12/2019.
 //
 
+#include <glm/gtc/matrix_transform.hpp>
 #include "ChessRenderer.h"
 #include "../util/Logger.h"
-#include "../model/Ruleset.h"
 #include "../util/Loader.h"
+#include "../model/Ruleset.h"
+#include "../model/PieceRegistry.h"
 
 GLuint shader;
 GLuint matLoc;
+GLuint vecLoc;
 
 ChessRenderer::ChessRenderer(GLFWwindow *window) {
     this->window = window;
@@ -17,6 +20,9 @@ ChessRenderer::ChessRenderer(GLFWwindow *window) {
 void ChessRenderer::Initialize() {
     glEnable(GL_DEPTH_TEST);
     glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
+
+    Logger::Info("Loading models...");
+    PieceRegistry::Initialize();
 
     Logger::Info("Loading ruleset...");
     Ruleset *ruleset = Ruleset::Load("assets/rules.json");
@@ -27,7 +33,7 @@ void ChessRenderer::Initialize() {
 
     shader = Loader::LoadShader("simple");
     matLoc = glGetUniformLocation(shader, "mvpMatrix");
-    testModel = Loader::LoadModel("rook.stl");
+    vecLoc = glGetUniformLocation(shader, "offset");
 }
 
 void ChessRenderer::RenderFrame() {
@@ -36,7 +42,19 @@ void ChessRenderer::RenderFrame() {
 
     glUseProgram(shader);
     glUniformMatrix4fv(matLoc, 1, GL_FALSE, &worldMat[0][0]);
-    testModel->Draw();
+
+    for (int x = 0; x < 8; x++)
+        for (int y = 0; y < 8; y++) {
+            Piece *piece = board->GetPiece(glm::vec2(x, y));
+            if (piece == nullptr) continue;
+
+            glm::vec3 offset(x, 0, y);
+            glUniform3f(vecLoc, offset.x * 2, offset.y * 2, offset.z * 2);
+
+            Model *model = PieceRegistry::GetModel(piece->type);
+            model->Draw();
+        }
+
 
     HandleInput();
 }

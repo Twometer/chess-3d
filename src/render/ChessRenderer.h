@@ -20,8 +20,6 @@ private:
 
     glm::vec2 viewportSize;
 
-    Model *testModel;
-
     void HandleInput();
 
 public:

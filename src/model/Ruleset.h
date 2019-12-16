@@ -14,8 +14,6 @@ class Ruleset {
 private:
     std::map<PieceType, Rule *> rules;
 
-    static PieceType TypeFromString(const std::string &name);
-
 public:
     static Ruleset *Load(const std::string &path);
 

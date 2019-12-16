@@ -6,6 +6,7 @@
 
 Board::Board(Ruleset *ruleset) {
     this->ruleset = ruleset;
+    memset(pieces, 0, BOARD_SIZE * BOARD_SIZE * sizeof(Piece *));
 }
 
 Board::~Board() {
