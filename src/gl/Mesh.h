@@ -11,6 +11,7 @@
 #include "Model.h"
 
 class Model;
+
 class Mesh {
 private:
     std::vector<GLfloat> vertices;
@@ -38,7 +39,7 @@ public:
         return normals;
     }
 
-    Model* CreateModel();
+    Model *CreateModel();
 
 };
 

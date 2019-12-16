@@ -16,7 +16,7 @@ private:
 
 public:
 
-    static Model* Load(uint8_t* buf);
+    static Model *Load(uint8_t *buf);
 
 };
 

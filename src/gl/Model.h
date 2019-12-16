@@ -9,6 +9,7 @@
 #include "Mesh.h"
 
 class Mesh;
+
 class Model {
 
 private:
