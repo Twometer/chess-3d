@@ -22,9 +22,13 @@ private:
 private:
     static bool CheckPosition(glm::vec2 position);
 
+    static inline int GetIndex(int x, int y);
+
     Piece *CreatePiece(PieceType type, Team team);
 
-    static inline int GetIndex(int x, int y);
+    void CreatePawns(int row, Team team);
+
+    void CreateBaseline(int row, Team team);
 
 public:
     explicit Board(Ruleset *ruleset);
@@ -38,6 +42,8 @@ public:
     Piece *GetPiece(glm::vec2 vec);
 
     void SetPiece(glm::vec2 vec, Piece *piece);
+
+    void SetPiece(glm::vec2 vec, PieceType type, Team team);
 };
 
 

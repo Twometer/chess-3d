@@ -21,7 +21,10 @@ bool Board::CheckPosition(glm::vec2 position) {
 }
 
 void Board::Initialize() {
-
+    CreateBaseline(0, Team::Black);
+    CreatePawns(1, Team::Black);
+    CreatePawns(6, Team::White);
+    CreateBaseline(7, Team::White);
 }
 
 MoveResult Board::Move(glm::vec2 from, glm::vec2 to) {
@@ -47,4 +50,24 @@ Piece *Board::GetPiece(glm::vec2 vec) {
 
 void Board::SetPiece(glm::vec2 vec, Piece *piece) {
     pieces[GetIndex(vec.x, vec.y)] = piece;
+}
+
+void Board::SetPiece(glm::vec2 vec, PieceType type, Team team) {
+    SetPiece(vec, CreatePiece(type, team));
+}
+
+void Board::CreatePawns(int row, Team team) {
+    for (int i = 0; i < BOARD_SIZE; i++)
+        SetPiece(glm::vec2(i, row), PieceType::Pawn, team);
+}
+
+void Board::CreateBaseline(int row, Team team) {
+    SetPiece(glm::vec2(0, row), PieceType::Rook, team);
+    SetPiece(glm::vec2(1, row), PieceType::Knight, team);
+    SetPiece(glm::vec2(2, row), PieceType::Bishop, team);
+    SetPiece(glm::vec2(3, row), PieceType::King, team);
+    SetPiece(glm::vec2(4, row), PieceType::Queen, team);
+    SetPiece(glm::vec2(5, row), PieceType::Bishop, team);
+    SetPiece(glm::vec2(6, row), PieceType::Knight, team);
+    SetPiece(glm::vec2(7, row), PieceType::Rook, team);
 }
