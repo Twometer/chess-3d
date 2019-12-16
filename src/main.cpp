@@ -5,15 +5,12 @@
 #include "model/Ruleset.h"
 #include "util/Logger.h"
 #include "util/Loader.h"
+#include "render/ChessRenderer.h"
 
 using namespace std;
 
 int main() {
-    Logger::Info("Loading ruleset...");
-    Ruleset *ruleset = Ruleset::Load("assets/rules.json");
-    auto *board = new Board(ruleset);
-    board->Initialize();
-
+    Logger::Info("Initializing rendering context...");
     if (!glfwInit()) {
         Logger::Error("Failed to initialize GLFW");
         return 1;
@@ -38,12 +35,14 @@ int main() {
         return 1;
     }
 
-    Loader::LoadModel("bishop.stl");
+    ChessRenderer renderer{};
+    renderer.Initialize();
+    renderer.OnViewportSizeChanged(glm::vec2(1000, 700));
 
     Logger::Info("Successfully initialized");
 
     while (!glfwWindowShouldClose(window)) {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        renderer.RenderFrame();
 
         glfwSwapBuffers(window);
         glfwPollEvents();
