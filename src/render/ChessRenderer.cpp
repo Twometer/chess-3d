@@ -27,7 +27,7 @@ void ChessRenderer::Initialize() {
 
     shader = Loader::LoadShader("simple");
     matLoc = glGetUniformLocation(shader, "mvpMatrix");
-    testModel = Loader::LoadModel("bishop.stl");
+    testModel = Loader::LoadModel("rook.stl");
 }
 
 void ChessRenderer::RenderFrame() {
