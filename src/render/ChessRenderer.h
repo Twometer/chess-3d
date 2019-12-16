@@ -17,6 +17,7 @@ private:
 
     glm::vec2 viewportSize;
 
+    Model *testModel;
 public:
     void Initialize();
 

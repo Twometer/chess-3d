@@ -29,8 +29,8 @@ std::string Loader::ReadAllText(const std::string &path) {
 }
 
 GLuint Loader::LoadShader(const std::string &name) {
-    const char *vertSource = ReadAllText("assets/" + name + ".v.glsl").c_str();
-    const char *fragSource = ReadAllText("assets/" + name + ".f.glsl").c_str();
+    const char *vertSource = ReadAllText("assets/shaders/" + name + ".v.glsl").c_str();
+    const char *fragSource = ReadAllText("assets/shaders/" + name + ".f.glsl").c_str();
 
     GLuint program = glCreateProgram();
 
