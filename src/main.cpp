@@ -14,8 +14,6 @@ int main() {
     auto *board = new Board(ruleset);
     board->Initialize();
 
-    Loader::LoadModel("bishop.stl");
-
     if (!glfwInit()) {
         Logger::Error("Failed to initialize GLFW");
         return 1;
@@ -39,6 +37,8 @@ int main() {
         glfwTerminate();
         return 1;
     }
+
+    Loader::LoadModel("bishop.stl");
 
     Logger::Info("Successfully initialized");
 

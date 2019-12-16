@@ -20,7 +20,23 @@ private:
 public:
     void AddVertex(glm::vec3 vertex);
 
+    std::vector<GLfloat> &GetVertices() {
+        return vertices;
+    }
+
+    int GetVertexCount() {
+        return vertices.size() / 3;
+    }
+
     void AddNormal(glm::vec3 normal);
+
+    int GetNormalCount() {
+        return normals.size() / 3;
+    }
+
+    std::vector<GLfloat> &GetNormals() {
+        return normals;
+    }
 
     Model* CreateModel();
 

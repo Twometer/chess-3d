@@ -14,6 +14,8 @@ class Model {
 private:
     GLuint vaoId;
 
+    int vertices;
+
 public:
     static Model *Create(Mesh *mesh);
 
