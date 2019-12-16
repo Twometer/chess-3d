@@ -8,6 +8,7 @@
 #include "../gl/Mesh.h"
 #include <fstream>
 #include <cstring>
+#include <iostream>
 
 uint8_t *Loader::ReadAllBytes(const std::string &path) {
     std::ifstream file(path);
@@ -29,18 +30,23 @@ std::string Loader::ReadAllText(const std::string &path) {
 }
 
 GLuint Loader::LoadShader(const std::string &name) {
-    const char *vertSource = ReadAllText("assets/shaders/" + name + ".v.glsl").c_str();
-    const char *fragSource = ReadAllText("assets/shaders/" + name + ".f.glsl").c_str();
+    Logger::Info("Loading shader " + name);
+    std::string vertSource = ReadAllText("assets/shaders/" + name + ".v.glsl");
+    std::string fragSource = ReadAllText("assets/shaders/" + name + ".f.glsl");
 
     GLuint program = glCreateProgram();
 
     GLuint vertShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertShader, 1, &vertSource, nullptr);
+    const char *vs = vertSource.c_str();
+    glShaderSource(vertShader, 1, &vs, nullptr);
     glCompileShader(vertShader);
+    CheckShader("Vertex", vertShader);
 
     GLuint fragShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragShader, 1, &fragSource, nullptr);
+    const char *fs = fragSource.c_str();
+    glShaderSource(fragShader, 1, &fs, nullptr);
     glCompileShader(fragShader);
+    CheckShader("Fragment", fragShader);
 
     glAttachShader(program, vertShader);
     glAttachShader(program, fragShader);
@@ -63,5 +69,15 @@ Model *Loader::LoadModel(const std::string &name) {
     Model *model = StlReader::Load(buf);
     delete[] buf;
     return model;
+}
+
+void Loader::CheckShader(const std::string &name, GLuint shader) {
+    int infoLogLength;
+    glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLogLength);
+    if (infoLogLength > 0) {
+        std::vector<char> errorMsg(infoLogLength + 1);
+        glGetShaderInfoLog(shader, infoLogLength, nullptr, &errorMsg[0]);
+        Logger::Error("[" + name + "] " + std::string(&errorMsg[0]));
+    }
 }
 

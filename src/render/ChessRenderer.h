@@ -8,9 +8,12 @@
 #include "../model/Board.h"
 #include "../gl/Model.h"
 #include "Camera.h"
+#include <GLFW/glfw3.h>
 
 class ChessRenderer {
 private:
+    GLFWwindow *window;
+
     Board *board;
 
     Camera *camera;
@@ -18,7 +21,12 @@ private:
     glm::vec2 viewportSize;
 
     Model *testModel;
+
+    void HandleInput();
+
 public:
+    explicit ChessRenderer(GLFWwindow *window);
+
     void Initialize();
 
     void RenderFrame();

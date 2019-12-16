@@ -35,7 +35,7 @@ int main() {
         return 1;
     }
 
-    ChessRenderer renderer{};
+    ChessRenderer renderer(window);
     renderer.Initialize();
     renderer.OnViewportSizeChanged(glm::vec2(1000, 700));
 

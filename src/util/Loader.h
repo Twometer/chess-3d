@@ -11,6 +11,9 @@
 #include "../gl/Model.h"
 
 class Loader {
+private:
+
+    static void CheckShader(const std::string &name, GLuint shader);
 
 public:
     static std::string ReadAllText(const std::string &path);

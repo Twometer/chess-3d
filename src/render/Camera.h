@@ -8,14 +8,12 @@
 #include <glm/glm.hpp>
 
 class Camera {
-private:
+public:
     glm::vec3 position;
 
     glm::vec2 rotation;
 
-public:
     glm::mat4 CalculateMatrix(glm::vec2 viewportSize);
-
 };
 
 
