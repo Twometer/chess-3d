@@ -20,6 +20,8 @@ private:
 
     glm::vec2 viewportSize;
 
+    glm::vec2 windowSize;
+
     void HandleInput();
 
 public:
@@ -31,9 +33,9 @@ public:
 
     void OnScroll(glm::vec2 scrollVector);
 
-    void OnViewportSizeChanged(glm::vec2 viewportSize) {
-        this->viewportSize = viewportSize;
-    }
+    void OnWindowSizeChanged(glm::vec2 windowSize);
+
+    void OnViewportSizeChanged(glm::vec2 viewportSize);
 };
 
 

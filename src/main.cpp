@@ -12,8 +12,11 @@ using namespace std;
 ChessRenderer *renderer;
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
-    glViewport(0, 0, width, height);
     renderer->OnViewportSizeChanged(glm::vec2(width, height));
+}
+
+void window_size_callback(GLFWwindow *window, int width, int height) {
+    renderer->OnWindowSizeChanged(glm::vec2(width, height));
 }
 
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
@@ -49,10 +52,15 @@ int main() {
 
     renderer = new ChessRenderer(window);
     renderer->Initialize();
-    renderer->OnViewportSizeChanged(glm::vec2(1000, 700));
+
+    int viewportWidth, viewportHeight;
+    glfwGetFramebufferSize(window, &viewportWidth, &viewportHeight);
+    renderer->OnViewportSizeChanged(glm::vec2(viewportWidth, viewportHeight));
+    renderer->OnWindowSizeChanged(glm::vec2(1000, 700));
 
     glfwSetScrollCallback(window, scroll_callback);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetWindowSizeCallback(window, window_size_callback);
 
     Logger::Info("Successfully initialized");
 

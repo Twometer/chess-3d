@@ -67,15 +67,24 @@ void ChessRenderer::HandleInput() {
 
     double mouseX, mouseY;
     glfwGetCursorPos(window, &mouseX, &mouseY);
+    glfwSetCursorPos(window, windowSize.x / 2.0f, windowSize.y / 2.0f);
 
-    glfwSetCursorPos(window, viewportSize.x / 2, viewportSize.y / 2);
-    camera->rotation.x += 0.1 * (viewportSize.x / 2 - mouseX);
-    camera->rotation.y -= 0.1 * (viewportSize.y / 2 - mouseY);
+    camera->rotation.x += 0.1 * (windowSize.x / 2.0f - mouseX);
+    camera->rotation.y -= 0.1 * (windowSize.y / 2.0f - mouseY);
     camera->position.x = 7;
     camera->position.z = 7;
 }
 
 void ChessRenderer::OnScroll(glm::vec2 scrollVector) {
     camera->zoom += scrollVector.y;
+}
+
+void ChessRenderer::OnWindowSizeChanged(glm::vec2 windowSize) {
+    this->windowSize = windowSize;
+}
+
+void ChessRenderer::OnViewportSizeChanged(glm::vec2 viewportSize) {
+    glViewport(0, 0, viewportSize.x, viewportSize.y);
+    this->viewportSize = viewportSize;
 }
 
