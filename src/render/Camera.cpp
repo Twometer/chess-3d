@@ -23,11 +23,11 @@ glm::mat4 Camera::CalculateMatrix(glm::vec2 viewportSize) {
             cos(yaw - PI / 2.0f)
     );
 
-    glm::vec3 up = glm::cross(right, direction);
+    glm::vec3 up = glm::cross(right, -direction);
 
     glm::mat4 projectionMatrix = glm::perspective(glm::radians(70.0f), (float) viewportSize.x / (float) viewportSize.y,
                                                   0.01f, 2000.0f);
-    glm::mat4 viewMatrix = glm::lookAt(position, position + direction, up);
+    glm::mat4 viewMatrix = glm::lookAt((-direction * zoom) + position, position, up);
 
     return projectionMatrix * viewMatrix;
 }

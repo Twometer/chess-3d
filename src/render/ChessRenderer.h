@@ -29,6 +29,8 @@ public:
 
     void RenderFrame();
 
+    void OnScroll(glm::vec2 scrollVector);
+
     void OnViewportSizeChanged(glm::vec2 viewportSize) {
         this->viewportSize = viewportSize;
     }

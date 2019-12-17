@@ -9,6 +9,18 @@
 
 using namespace std;
 
+ChessRenderer *renderer;
+
+void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
+    glViewport(0, 0, width, height);
+    renderer->OnViewportSizeChanged(glm::vec2(width, height));
+}
+
+void scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
+    renderer->OnScroll(glm::vec2(xoffset, yoffset));
+}
+
+
 int main() {
     Logger::Info("Initializing rendering context...");
     if (!glfwInit()) {
@@ -35,14 +47,17 @@ int main() {
         return 1;
     }
 
-    ChessRenderer renderer(window);
-    renderer.Initialize();
-    renderer.OnViewportSizeChanged(glm::vec2(1000, 700));
+    renderer = new ChessRenderer(window);
+    renderer->Initialize();
+    renderer->OnViewportSizeChanged(glm::vec2(1000, 700));
+
+    glfwSetScrollCallback(window, scroll_callback);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     Logger::Info("Successfully initialized");
 
     while (!glfwWindowShouldClose(window)) {
-        renderer.RenderFrame();
+        renderer->RenderFrame();
 
         glfwSwapBuffers(window);
         glfwPollEvents();

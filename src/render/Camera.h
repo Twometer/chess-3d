@@ -9,6 +9,8 @@
 
 class Camera {
 public:
+    float zoom;
+
     glm::vec3 position;
 
     glm::vec2 rotation;

@@ -70,42 +70,12 @@ void ChessRenderer::HandleInput() {
 
     glfwSetCursorPos(window, viewportSize.x / 2, viewportSize.y / 2);
     camera->rotation.x += 0.1 * (viewportSize.x / 2 - mouseX);
-    camera->rotation.y += 0.1 * (viewportSize.y / 2 - mouseY);
-    camera->rotation.y = glm::clamp(camera->rotation.y, -90.0f, 90.0f);
+    camera->rotation.y -= 0.1 * (viewportSize.y / 2 - mouseY);
+    camera->position.x = 7;
+    camera->position.z = 7;
+}
 
-    glm::vec3 directionMovement(
-            sin(glm::radians(camera->rotation.x)),
-            0,
-            cos(glm::radians(camera->rotation.x))
-    );
-
-    glm::vec3 directionRight(
-            sin(glm::radians(camera->rotation.x) - 1.575),
-            0,
-            cos(glm::radians(camera->rotation.x) - 1.575)
-    );
-
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-        camera->position.x += 0.1 * directionMovement.x;
-        camera->position.z += 0.1 * directionMovement.z;
-    }
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-        camera->position.x -= 0.1 * directionRight.x;
-        camera->position.z -= 0.1 * directionRight.z;
-    }
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-        camera->position.x -= 0.1 * directionMovement.x;
-        camera->position.z -= 0.1 * directionMovement.z;
-    }
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-        camera->position.x += 0.1 * directionRight.x;
-        camera->position.z += 0.1 * directionRight.z;
-    }
-    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-        camera->position.y += 0.1;
-    }
-    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
-        camera->position.y -= 0.1;
-    }
+void ChessRenderer::OnScroll(glm::vec2 scrollVector) {
+    camera->zoom += scrollVector.y;
 }
 
