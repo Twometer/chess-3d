@@ -9,11 +9,11 @@
 
 class Camera {
 public:
-    float zoom;
+    float zoom = 15.0f;
 
     glm::vec3 position;
 
-    glm::vec2 rotation;
+    glm::vec2 rotation = glm::vec2(0, -150);
 
     glm::mat4 CalculateMatrix(glm::vec2 viewportSize);
 };

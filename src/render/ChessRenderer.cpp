@@ -67,16 +67,27 @@ void ChessRenderer::HandleInput() {
 
     double mouseX, mouseY;
     glfwGetCursorPos(window, &mouseX, &mouseY);
-    glfwSetCursorPos(window, windowSize.x / 2.0f, windowSize.y / 2.0f);
 
-    camera->rotation.x += 0.1 * (windowSize.x / 2.0f - mouseX);
-    camera->rotation.y -= 0.1 * (windowSize.y / 2.0f - mouseY);
+    static double mouseXLast, mouseYLast;
+
+    if ((mouseXLast != mouseX || mouseYLast != mouseY) &&
+        glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
+        camera->rotation.x -= 0.2 * (mouseX - mouseXLast);
+        camera->rotation.y += 0.2 * (mouseY - mouseYLast);
+
+        camera->rotation.y = glm::clamp(camera->rotation.y, -180.f, -90.f);
+    }
+
+    mouseXLast = mouseX;
+    mouseYLast = mouseY;
+
     camera->position.x = 7;
     camera->position.z = 7;
 }
 
 void ChessRenderer::OnScroll(glm::vec2 scrollVector) {
     camera->zoom += scrollVector.y;
+    camera->zoom = glm::clamp(camera->zoom, 0.01f, 25.0f);
 }
 
 void ChessRenderer::OnWindowSizeChanged(glm::vec2 windowSize) {
