@@ -23,6 +23,11 @@ void scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
     renderer->OnScroll(glm::vec2(xoffset, yoffset));
 }
 
+void mouse_button_callback(GLFWwindow *window, int button, int action, int mods) {
+    if (action == GLFW_PRESS && button == GLFW_MOUSE_BUTTON_LEFT)
+        renderer->OnClick();
+}
+
 
 int main() {
     Logger::Info("Initializing rendering context...");
@@ -61,6 +66,7 @@ int main() {
     glfwSetScrollCallback(window, scroll_callback);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetWindowSizeCallback(window, window_size_callback);
+    glfwSetMouseButtonCallback(window, mouse_button_callback);
 
     Logger::Info("Successfully initialized");
 

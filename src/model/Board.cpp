@@ -46,7 +46,11 @@ Piece *Board::CreatePiece(PieceType type, Team team) {
 }
 
 Piece *Board::GetPiece(glm::vec2 vec) {
-    return pieces[GetIndex(vec.x, vec.y)];
+    int idx = GetIndex(vec.x, vec.y);
+    if (idx < 0 || idx >= BOARD_SIZE * BOARD_SIZE)
+        return nullptr;
+
+    return pieces[idx];
 }
 
 void Board::SetPiece(glm::vec2 vec, Piece *piece) {

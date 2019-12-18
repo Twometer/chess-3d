@@ -31,6 +31,7 @@ void ChessRenderer::Initialize() {
 
     this->camera = new Camera();
     this->board = new Board(ruleset);
+    this->picker = new PickEngine(board, camera);
     board->Initialize();
 
     shader = Loader::LoadShader("simple");
@@ -86,7 +87,7 @@ void ChessRenderer::HandleInput() {
 }
 
 void ChessRenderer::OnScroll(glm::vec2 scrollVector) {
-    camera->zoom += scrollVector.y;
+    camera->zoom -= scrollVector.y;
     camera->zoom = glm::clamp(camera->zoom, 0.01f, 25.0f);
 }
 
@@ -97,5 +98,18 @@ void ChessRenderer::OnWindowSizeChanged(glm::vec2 windowSize) {
 void ChessRenderer::OnViewportSizeChanged(glm::vec2 viewportSize) {
     glViewport(0, 0, viewportSize.x, viewportSize.y);
     this->viewportSize = viewportSize;
+    this->picker->Resize(viewportSize.x, viewportSize.y);
+}
+
+void ChessRenderer::OnClick() {
+    double mouseX, mouseY;
+    glfwGetCursorPos(window, &mouseX, &mouseY);
+
+    Piece *piece = this->picker->Pick((int) mouseX, (int) mouseY);
+    if (piece == nullptr)
+        printf("deselected\n");
+    else
+        printf("piece: %d, %d selected\n", piece->type, piece->team);
+
 }
 

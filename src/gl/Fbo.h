@@ -38,6 +38,10 @@ public:
 
     GLuint GetDepthTexture();
 
+    int GetWidth() { return width; }
+
+    int GetHeight() { return height; }
+
 private:
     void Initialize(DepthBufferType depthBufferType);
 

@@ -34,6 +34,12 @@ GLuint Loader::LoadShader(const std::string &name) {
     std::string vertSource = ReadAllText("assets/shaders/" + name + ".v.glsl");
     std::string fragSource = ReadAllText("assets/shaders/" + name + ".f.glsl");
 
+    if (vertSource.length() == 0 || fragSource.length() == 0) {
+        Logger::Error("Shader " + name + " is empty");
+        return 0;
+    }
+
+
     GLuint program = glCreateProgram();
 
     GLuint vertShader = glCreateShader(GL_VERTEX_SHADER);

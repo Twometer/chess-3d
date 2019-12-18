@@ -7,6 +7,7 @@
 
 #include "../model/Board.h"
 #include "../gl/Model.h"
+#include "PickEngine.h"
 #include "Camera.h"
 #include <GLFW/glfw3.h>
 
@@ -17,6 +18,8 @@ private:
     Board *board;
 
     Camera *camera;
+
+    PickEngine *picker;
 
     glm::vec2 viewportSize;
 
@@ -36,6 +39,8 @@ public:
     void OnWindowSizeChanged(glm::vec2 windowSize);
 
     void OnViewportSizeChanged(glm::vec2 viewportSize);
+
+    void OnClick();
 };
 
 
