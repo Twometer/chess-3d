@@ -20,9 +20,9 @@ private:
     Camera *camera;
 
     PickEngine *picker;
+    Piece *selectedPiece;
 
     glm::vec2 viewportSize;
-
     glm::vec2 windowSize;
 
     void HandleInput();

@@ -52,6 +52,9 @@ void ChessRenderer::RenderFrame() {
             if (piece == nullptr) continue;
 
             glm::vec3 offset(x, 0, y);
+            if (piece == selectedPiece)
+                offset.y += 0.5;
+
             glUniform3f(vecLoc, offset.x * 2, offset.y * 2, offset.z * 2);
 
             Model *model = PieceRegistry::GetModel(piece->type);
@@ -105,11 +108,7 @@ void ChessRenderer::OnClick() {
     double mouseX, mouseY;
     glfwGetCursorPos(window, &mouseX, &mouseY);
 
-    Piece *piece = this->picker->Pick((int) mouseX, (int) mouseY);
-    if (piece == nullptr)
-        printf("deselected\n");
-    else
-        printf("piece: %d, %d selected\n", piece->type, piece->team);
-
+    Piece *piece = picker->Pick((int) mouseX, (int) mouseY);
+    selectedPiece = piece;
 }
 

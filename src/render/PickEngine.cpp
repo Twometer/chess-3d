@@ -21,10 +21,8 @@ Piece *PickEngine::Pick(int mx, int my) {
     fbo->Bind();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glm::mat4 worldMat = camera->CalculateMatrix(glm::vec2(fbo->GetWidth(), fbo->GetHeight()));
-
     glUseProgram(shader);
-    glUniformMatrix4fv(matLoc, 1, GL_FALSE, &worldMat[0][0]);
+    glUniformMatrix4fv(matLoc, 1, GL_FALSE, &camera->GetMatrix()[0][0]);
 
     for (int x = 0; x < 8; x++)
         for (int y = 0; y < 8; y++) {

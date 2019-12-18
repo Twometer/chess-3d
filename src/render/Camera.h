@@ -8,6 +8,9 @@
 #include <glm/glm.hpp>
 
 class Camera {
+private:
+    glm::mat4 matrix;
+
 public:
     float zoom = 15.0f;
 
@@ -16,6 +19,8 @@ public:
     glm::vec2 rotation = glm::vec2(0, -150);
 
     glm::mat4 CalculateMatrix(glm::vec2 viewportSize);
+
+    glm::mat4 GetMatrix() { return matrix; }
 };
 
 

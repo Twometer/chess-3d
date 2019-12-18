@@ -29,5 +29,5 @@ glm::mat4 Camera::CalculateMatrix(glm::vec2 viewportSize) {
                                                   0.01f, 2000.0f);
     glm::mat4 viewMatrix = glm::lookAt((-direction * zoom) + position, position, up);
 
-    return projectionMatrix * viewMatrix;
+    return matrix = (projectionMatrix * viewMatrix);
 }
