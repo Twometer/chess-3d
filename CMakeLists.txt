@@ -22,7 +22,7 @@ add_executable(chess_3d
         src/gl/Model.cpp
         src/util/StlReader.cpp
         src/render/ChessRenderer.cpp
-        src/render/Camera.cpp)
+        src/render/Camera.cpp src/gl/Fbo.cpp src/gl/Fbo.h)
 
 
 target_include_directories(chess_3d PRIVATE libs/glm libs/glfw/include inc)
