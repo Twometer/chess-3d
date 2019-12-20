@@ -7,6 +7,7 @@
 Fbo::Fbo(int width, int height, DepthBufferType type) {
     this->width = width;
     this->height = height;
+    Initialize(type);
 }
 
 Fbo::~Fbo() {
@@ -24,6 +25,7 @@ void Fbo::Bind() {
 
 void Fbo::Unbind() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glViewport(0, 0, width, height);
 }
 
 GLuint Fbo::GetColorTexture() {
