@@ -9,6 +9,7 @@
 #include "../gl/Model.h"
 #include "PickEngine.h"
 #include "Camera.h"
+#include "shaders/SimpleShader.h"
 #include <GLFW/glfw3.h>
 
 class ChessRenderer {
@@ -18,6 +19,7 @@ private:
     Board *board;
 
     Camera *camera;
+    SimpleShader *shader;
 
     PickEngine *picker;
     Piece *selectedPiece;

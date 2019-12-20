@@ -9,10 +9,6 @@
 #include "../model/Ruleset.h"
 #include "../model/PieceRegistry.h"
 
-GLuint shader;
-GLuint matLoc;
-GLuint vecLoc;
-
 ChessRenderer::ChessRenderer(GLFWwindow *window) {
     this->window = window;
 }
@@ -34,17 +30,15 @@ void ChessRenderer::Initialize() {
     this->picker = new PickEngine(board, camera);
     board->Initialize();
 
-    shader = Loader::LoadShader("simple");
-    matLoc = glGetUniformLocation(shader, "mvpMatrix");
-    vecLoc = glGetUniformLocation(shader, "offset");
+    shader = new SimpleShader();
 }
 
 void ChessRenderer::RenderFrame() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glm::mat4 worldMat = camera->CalculateMatrix(viewportSize);
 
-    glUseProgram(shader);
-    glUniformMatrix4fv(matLoc, 1, GL_FALSE, &worldMat[0][0]);
+    shader->Bind();
+    shader->SetMvpMatrix(worldMat);
 
     for (int x = 0; x < 8; x++)
         for (int y = 0; y < 8; y++) {
@@ -55,7 +49,7 @@ void ChessRenderer::RenderFrame() {
             if (piece == selectedPiece)
                 offset.y += 0.5;
 
-            glUniform3f(vecLoc, offset.x * 2, offset.y * 2, offset.z * 2);
+            shader->SetOffset(offset * glm::vec3(2, 2, 2));
 
             Model *model = PieceRegistry::GetModel(piece->type);
             model->Draw();

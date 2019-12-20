@@ -12,17 +12,15 @@ PickEngine::PickEngine(Board *board, Camera *camera) {
     this->camera = camera;
     this->fbo = nullptr;
 
-    this->shader = Loader::LoadShader("pick");
-    matLoc = glGetUniformLocation(shader, "mvpMatrix");
-    vecLoc = glGetUniformLocation(shader, "position");
+    this->shader = new PickShader();
 }
 
 Piece *PickEngine::Pick(int mx, int my) {
     fbo->Bind();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glUseProgram(shader);
-    glUniformMatrix4fv(matLoc, 1, GL_FALSE, &camera->GetMatrix()[0][0]);
+    shader->Bind();
+    shader->SetMvpMatrix(camera->GetMatrix());
 
     for (int x = 0; x < 8; x++)
         for (int y = 0; y < 8; y++) {
@@ -30,7 +28,7 @@ Piece *PickEngine::Pick(int mx, int my) {
             Piece *piece = board->GetPiece(pos);
             if (piece == nullptr) continue;
 
-            glUniform2f(vecLoc, pos.x, pos.y);
+            shader->SetPosition(pos);
 
             Model *model = PieceRegistry::GetModel(piece->type);
             model->Draw();

@@ -9,6 +9,7 @@
 #include "Camera.h"
 #include "../model/Board.h"
 #include "../model/Piece.h"
+#include "shaders/PickShader.h"
 
 class PickEngine {
 
@@ -19,9 +20,7 @@ private:
 
     Fbo *fbo;
 
-    GLuint shader;
-    GLuint matLoc;
-    GLuint vecLoc;
+    PickShader *shader;
 
 public:
     PickEngine(Board *board, Camera *camera);
