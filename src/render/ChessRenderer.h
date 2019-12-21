@@ -11,6 +11,9 @@
 #include "Camera.h"
 #include "shaders/SimpleShader.h"
 #include "shaders/CopyShader.h"
+#include "shaders/SelectionShader.h"
+#include "shaders/HGaussShader.h"
+#include "shaders/VGaussShader.h"
 #include <GLFW/glfw3.h>
 
 class ChessRenderer {
@@ -20,12 +23,16 @@ private:
     Board *board;
 
     Camera *camera;
-    SimpleShader *shader;
+    SimpleShader *boardShader;
     CopyShader *copyShader;
+    SelectionShader *selectionShader;
+    HGaussShader *hGaussShader;
+    VGaussShader *vGaussShader;
 
     PickEngine *picker;
-    Piece *selectedPiece;
-    Fbo *fbo;
+    Piece *selectedPiece = nullptr;
+    Fbo *fbo = nullptr;
+    Fbo *fbo2 = nullptr;
 
     static glm::vec2 viewportSize;
     glm::vec2 windowSize;

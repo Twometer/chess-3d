@@ -5,7 +5,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "ChessRenderer.h"
 #include "../util/Logger.h"
-#include "../util/Loader.h"
 #include "../model/Ruleset.h"
 #include "../model/PieceRegistry.h"
 #include "Postproc.h"
@@ -17,11 +16,13 @@ ChessRenderer::ChessRenderer(GLFWwindow *window) {
 }
 
 void ChessRenderer::Initialize() {
-    glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glEnable(GL_TEXTURE_2D);
+    glEnable(GL_MULTISAMPLE);
     glCullFace(GL_FRONT);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     Logger::Info("Loading models...");
     PieceRegistry::Initialize();
@@ -35,19 +36,23 @@ void ChessRenderer::Initialize() {
     this->picker = new PickEngine(board, camera);
     board->Initialize();
 
-    shader = new SimpleShader();
+    boardShader = new SimpleShader();
     copyShader = new CopyShader();
+    selectionShader = new SelectionShader();
+    hGaussShader = new HGaussShader();
+    vGaussShader = new VGaussShader();
 }
 
 void ChessRenderer::RenderFrame() {
 
-    fbo->Bind();
+
     glViewport(0, 0, viewportSize.x, viewportSize.y);
+    glClearColor(0.8f, 0.8f, 0.8f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glm::mat4 worldMat = camera->CalculateMatrix(viewportSize);
 
-    shader->Bind();
-    shader->SetMvpMatrix(worldMat);
+    boardShader->Bind();
+    boardShader->SetMvpMatrix(worldMat);
 
     for (int x = 0; x < 8; x++)
         for (int y = 0; y < 8; y++) {
@@ -55,25 +60,79 @@ void ChessRenderer::RenderFrame() {
             if (piece == nullptr) continue;
 
             glm::vec3 offset(x, 0, y);
-            if (piece == selectedPiece)
-                offset.y += 0.5;
+            if (piece == selectedPiece) {
+                continue;
+            }
 
-            shader->SetOffset(offset * glm::vec3(2, 2, 2));
+            boardShader->SetOffset(offset * glm::vec3(2, 2, 2));
 
             Model *model = PieceRegistry::GetModel(piece->type);
             model->Draw();
         }
 
+
+    fbo->Bind();
+    glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    selectionShader->Bind();
+    selectionShader->SetMvpMatrix(worldMat);
+    for (int x = 0; x < 8; x++)
+        for (int y = 0; y < 8; y++) {
+            Piece *piece = board->GetPiece(glm::vec2(x, y));
+            if (piece == nullptr) continue;
+
+            if (piece != selectedPiece) {
+                continue;
+            }
+            glm::vec3 offset(x, 0, y);
+
+            selectionShader->SetPosition(glm::vec2(x, y));
+
+            Model *model = PieceRegistry::GetModel(piece->type);
+            model->Draw();
+        }
     fbo->Unbind();
 
+    fbo2->Bind();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    boardShader->Bind();
+    boardShader->SetMvpMatrix(worldMat);
+    for (int x = 0; x < 8; x++)
+        for (int y = 0; y < 8; y++) {
+            Piece *piece = board->GetPiece(glm::vec2(x, y));
+            if (piece == nullptr) continue;
+
+            if (piece != selectedPiece) {
+                continue;
+            }
+            glm::vec3 offset(x, 0, y);
+
+            boardShader->SetOffset(offset * glm::vec3(2, 2, 2));
+
+            Model *model = PieceRegistry::GetModel(piece->type);
+            model->Draw();
+        }
+    fbo2->Unbind();
 
     glDisable(GL_CULL_FACE);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    copyShader->Bind();
+    glDepthMask(false);
+
     Postproc::Start();
+    hGaussShader->Bind();
+    hGaussShader->SetTargetWidth(viewportSize.x / 2);
     Postproc::Copy(fbo, nullptr);
+
+    vGaussShader->Bind();
+    vGaussShader->SetTargetHeight(viewportSize.y / 2);
+    Postproc::Copy(fbo, nullptr);
+
+    copyShader->Bind();
+    Postproc::Copy(fbo2, nullptr);
+
     Postproc::Stop();
+    glDepthMask(true);
     glEnable(GL_CULL_FACE);
+
 
     HandleInput();
 }
@@ -114,7 +173,12 @@ void ChessRenderer::OnWindowSizeChanged(glm::vec2 windowSize) {
 void ChessRenderer::OnViewportSizeChanged(glm::vec2 viewportSize) {
     this->viewportSize = viewportSize;
     this->picker->Resize(viewportSize.x, viewportSize.y);
-    this->fbo = new Fbo(viewportSize.x, viewportSize.y, DepthBufferType::DEPTH_RBUF);
+
+    delete this->fbo;
+    this->fbo = new Fbo(viewportSize.x / 2, viewportSize.y / 2, DepthBufferType::DEPTH_RBUF);
+
+    delete this->fbo2;
+    this->fbo2 = new Fbo(viewportSize.x, viewportSize.y, DepthBufferType::DEPTH_RBUF);
 }
 
 void ChessRenderer::OnClick() {
