@@ -3,6 +3,7 @@
 //
 
 #include "Fbo.h"
+#include "../render/ChessRenderer.h"
 
 Fbo::Fbo(int width, int height, DepthBufferType type) {
     this->width = width;
@@ -25,7 +26,7 @@ void Fbo::Bind() {
 
 void Fbo::Unbind() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glViewport(0, 0, width, height);
+    glViewport(0, 0, ChessRenderer::GetViewportSize().x, ChessRenderer::GetViewportSize().y);
 }
 
 GLuint Fbo::GetColorTexture() {

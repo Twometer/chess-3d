@@ -10,6 +10,7 @@
 #include "PickEngine.h"
 #include "Camera.h"
 #include "shaders/SimpleShader.h"
+#include "shaders/CopyShader.h"
 #include <GLFW/glfw3.h>
 
 class ChessRenderer {
@@ -20,11 +21,13 @@ private:
 
     Camera *camera;
     SimpleShader *shader;
+    CopyShader *copyShader;
 
     PickEngine *picker;
     Piece *selectedPiece;
+    Fbo *fbo;
 
-    glm::vec2 viewportSize;
+    static glm::vec2 viewportSize;
     glm::vec2 windowSize;
 
     void HandleInput();
@@ -43,6 +46,10 @@ public:
     void OnViewportSizeChanged(glm::vec2 viewportSize);
 
     void OnClick();
+
+    static inline glm::vec2 GetViewportSize() {
+        return viewportSize;
+    }
 };
 
 

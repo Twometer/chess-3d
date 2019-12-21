@@ -18,12 +18,12 @@ private:
     int width;
     int height;
 
-    GLuint frameBuffer;
-    GLuint depthBuffer;
-    GLuint colorBuffer;
+    GLuint frameBuffer = 0;
+    GLuint depthBuffer = 0;
+    GLuint colorBuffer = 0;
 
-    GLuint depthTexture;
-    GLuint colorTexture;
+    GLuint depthTexture = 0;
+    GLuint colorTexture = 0;
 
 public:
     Fbo(int width, int height, DepthBufferType type);

@@ -24,8 +24,9 @@ add_executable(chess_3d
         src/util/StlReader.cpp
         src/render/ChessRenderer.cpp
         src/render/Camera.cpp
+        src/render/Postproc.cpp
         src/render/PickEngine.cpp
-        src/render/shaders/IShader.cpp src/render/shaders/PickShader.h src/render/shaders/SimpleShader.h)
+        src/render/shaders/IShader.cpp)
 
 target_include_directories(chess_3d PRIVATE libs/glm libs/glfw/include inc)
 target_link_libraries(chess_3d glfw ${GLFW_LIBRARIES} nlohmann_json::nlohmann_json)

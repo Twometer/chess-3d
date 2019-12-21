@@ -8,6 +8,9 @@
 #include "../util/Loader.h"
 #include "../model/Ruleset.h"
 #include "../model/PieceRegistry.h"
+#include "Postproc.h"
+
+glm::vec2 ChessRenderer::viewportSize;
 
 ChessRenderer::ChessRenderer(GLFWwindow *window) {
     this->window = window;
@@ -17,10 +20,12 @@ void ChessRenderer::Initialize() {
     glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
+    glEnable(GL_TEXTURE_2D);
     glCullFace(GL_FRONT);
 
     Logger::Info("Loading models...");
     PieceRegistry::Initialize();
+    Postproc::Initialize();
 
     Logger::Info("Loading ruleset...");
     Ruleset *ruleset = Ruleset::Load("assets/rules.json");
@@ -31,9 +36,13 @@ void ChessRenderer::Initialize() {
     board->Initialize();
 
     shader = new SimpleShader();
+    copyShader = new CopyShader();
 }
 
 void ChessRenderer::RenderFrame() {
+
+    fbo->Bind();
+    glViewport(0, 0, viewportSize.x, viewportSize.y);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glm::mat4 worldMat = camera->CalculateMatrix(viewportSize);
 
@@ -55,6 +64,16 @@ void ChessRenderer::RenderFrame() {
             model->Draw();
         }
 
+    fbo->Unbind();
+
+
+    glDisable(GL_CULL_FACE);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    copyShader->Bind();
+    Postproc::Start();
+    Postproc::Copy(fbo, nullptr);
+    Postproc::Stop();
+    glEnable(GL_CULL_FACE);
 
     HandleInput();
 }
@@ -93,9 +112,9 @@ void ChessRenderer::OnWindowSizeChanged(glm::vec2 windowSize) {
 }
 
 void ChessRenderer::OnViewportSizeChanged(glm::vec2 viewportSize) {
-    glViewport(0, 0, viewportSize.x, viewportSize.y);
     this->viewportSize = viewportSize;
     this->picker->Resize(viewportSize.x, viewportSize.y);
+    this->fbo = new Fbo(viewportSize.x, viewportSize.y, DepthBufferType::DEPTH_RBUF);
 }
 
 void ChessRenderer::OnClick() {
