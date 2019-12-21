@@ -9,7 +9,8 @@ add_subdirectory(libs/glfw)
 add_subdirectory(libs/json)
 
 add_executable(chess_3d
-        ext/glad.c
+        ext/glad.cpp
+        ext/lodepng.cpp
         src/main.cpp
         src/model/Rule.cpp
         src/model/Board.cpp
