@@ -15,6 +15,8 @@ protected:
 
     void Initialize(const std::string &name);
 
+    void Initialize(const std::string &vname, const std::string &fname);
+
     virtual void BindUniforms() = 0;
 
     void LoadMatrix(int loc, glm::mat4 matrix);

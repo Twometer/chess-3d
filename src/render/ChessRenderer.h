@@ -9,11 +9,11 @@
 #include "../gl/Model.h"
 #include "PickEngine.h"
 #include "Camera.h"
-#include "shaders/SimpleShader.h"
+#include "shaders/BoardShader.h"
 #include "shaders/CopyShader.h"
 #include "shaders/SelectionShader.h"
-#include "shaders/HGaussShader.h"
-#include "shaders/VGaussShader.h"
+#include "shaders/HBlurShader.h"
+#include "shaders/VBlurShader.h"
 #include <GLFW/glfw3.h>
 
 class ChessRenderer {
@@ -23,21 +23,25 @@ private:
     Board *board;
 
     Camera *camera;
-    SimpleShader *boardShader;
+    BoardShader *boardShader;
     CopyShader *copyShader;
     SelectionShader *selectionShader;
-    HGaussShader *hGaussShader;
-    VGaussShader *vGaussShader;
+    HBlurShader *hGaussShader;
+    VBlurShader *vGaussShader;
 
     PickEngine *picker;
     Piece *selectedPiece = nullptr;
     Fbo *fbo = nullptr;
     Fbo *fbo2 = nullptr;
+    Fbo *fbo3 = nullptr;
+    Fbo *fbo4 = nullptr;
 
     static glm::vec2 viewportSize;
     glm::vec2 windowSize;
 
     void HandleInput();
+
+    void DrawSelection(glm::mat4 mat, glm::vec2 position);
 
 public:
     explicit ChessRenderer(GLFWwindow *window);

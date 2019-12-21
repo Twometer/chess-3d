@@ -2,19 +2,19 @@
 // Created by Twometer on 20/12/2019.
 //
 
-#ifndef CHESS_3D_HGAUSSSHADER_H
-#define CHESS_3D_HGAUSSSHADER_H
+#ifndef CHESS_3D_HBLURSHADER_H
+#define CHESS_3D_HBLURSHADER_H
 
 #include "IShader.h"
 
-class HGaussShader : public IShader {
+class HBlurShader : public IShader {
 
 private:
     GLuint loc_targetWidth;
 
 public:
-    HGaussShader() {
-        Initialize("hgauss");
+    HBlurShader() {
+        Initialize("hblur", "blur");
     }
 
     void BindUniforms() override {
@@ -27,4 +27,4 @@ public:
 
 };
 
-#endif //CHESS_3D_HGAUSSSHADER_H
+#endif //CHESS_3D_HBLURSHADER_H

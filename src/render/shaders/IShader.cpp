@@ -10,6 +10,11 @@ void IShader::Initialize(const std::string &name) {
     BindUniforms();
 }
 
+void IShader::Initialize(const std::string &vname, const std::string &fname) {
+    this->id = Loader::LoadShader(vname, fname);
+    BindUniforms();
+}
+
 void IShader::Bind() {
     glUseProgram(id);
 }

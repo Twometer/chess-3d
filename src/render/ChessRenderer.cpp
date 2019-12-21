@@ -36,11 +36,11 @@ void ChessRenderer::Initialize() {
     this->picker = new PickEngine(board, camera);
     board->Initialize();
 
-    boardShader = new SimpleShader();
+    boardShader = new BoardShader();
     copyShader = new CopyShader();
     selectionShader = new SelectionShader();
-    hGaussShader = new HGaussShader();
-    vGaussShader = new VGaussShader();
+    hGaussShader = new HBlurShader();
+    vGaussShader = new VBlurShader();
 }
 
 void ChessRenderer::RenderFrame() {
@@ -53,89 +53,70 @@ void ChessRenderer::RenderFrame() {
 
     boardShader->Bind();
     boardShader->SetMvpMatrix(worldMat);
+    glm::vec2 selectedPosition;
 
     for (int x = 0; x < 8; x++)
         for (int y = 0; y < 8; y++) {
             Piece *piece = board->GetPiece(glm::vec2(x, y));
             if (piece == nullptr) continue;
 
-            glm::vec3 offset(x, 0, y);
+            glm::vec2 pos(x, y);
             if (piece == selectedPiece) {
+                selectedPosition = pos;
                 continue;
             }
 
-            boardShader->SetOffset(offset * glm::vec3(2, 2, 2));
-
-            Model *model = PieceRegistry::GetModel(piece->type);
-            model->Draw();
+            boardShader->SetPosition(pos);
+            PieceRegistry::GetModel(piece->type)->Draw();
         }
 
+    if (selectedPiece != nullptr)
+        DrawSelection(worldMat, selectedPosition);
 
+
+    HandleInput();
+}
+
+void ChessRenderer::DrawSelection(glm::mat4 mat, glm::vec2 position) {
+    // Outline pass
     fbo->Bind();
-    glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
+    glClearColor(0, 0.62f, 1.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     selectionShader->Bind();
-    selectionShader->SetMvpMatrix(worldMat);
-    for (int x = 0; x < 8; x++)
-        for (int y = 0; y < 8; y++) {
-            Piece *piece = board->GetPiece(glm::vec2(x, y));
-            if (piece == nullptr) continue;
-
-            if (piece != selectedPiece) {
-                continue;
-            }
-            glm::vec3 offset(x, 0, y);
-
-            selectionShader->SetPosition(glm::vec2(x, y));
-
-            Model *model = PieceRegistry::GetModel(piece->type);
-            model->Draw();
-        }
+    selectionShader->SetMvpMatrix(mat);
+    selectionShader->SetPosition(position);
+    PieceRegistry::GetModel(selectedPiece->type)->Draw();
     fbo->Unbind();
 
+    // Non-Outline Pass
     fbo2->Bind();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     boardShader->Bind();
-    boardShader->SetMvpMatrix(worldMat);
-    for (int x = 0; x < 8; x++)
-        for (int y = 0; y < 8; y++) {
-            Piece *piece = board->GetPiece(glm::vec2(x, y));
-            if (piece == nullptr) continue;
-
-            if (piece != selectedPiece) {
-                continue;
-            }
-            glm::vec3 offset(x, 0, y);
-
-            boardShader->SetOffset(offset * glm::vec3(2, 2, 2));
-
-            Model *model = PieceRegistry::GetModel(piece->type);
-            model->Draw();
-        }
+    boardShader->SetMvpMatrix(mat);
+    selectionShader->SetPosition(position);
+    PieceRegistry::GetModel(selectedPiece->type)->Draw();
     fbo2->Unbind();
 
     glDisable(GL_CULL_FACE);
     glDepthMask(false);
 
-    // TODO Why does copying from FBO to FBO not work?
     Postproc::Start();
+
     hGaussShader->Bind();
-    hGaussShader->SetTargetWidth(viewportSize.x / 2);
-    Postproc::Copy(fbo, nullptr);
+    hGaussShader->SetTargetWidth(fbo3->GetWidth());
+    Postproc::Copy(fbo, fbo3);
 
     vGaussShader->Bind();
-    vGaussShader->SetTargetHeight(viewportSize.y / 2);
-    Postproc::Copy(fbo, nullptr);
+    vGaussShader->SetTargetHeight(fbo4->GetHeight());
+    Postproc::Copy(fbo3, nullptr);
 
+    Postproc::Copy(fbo3, nullptr);
     copyShader->Bind();
     Postproc::Copy(fbo2, nullptr);
 
     Postproc::Stop();
     glDepthMask(true);
     glEnable(GL_CULL_FACE);
-
-
-    HandleInput();
 }
 
 void ChessRenderer::HandleInput() {
@@ -176,10 +157,16 @@ void ChessRenderer::OnViewportSizeChanged(glm::vec2 viewportSize) {
     this->picker->Resize(viewportSize.x, viewportSize.y);
 
     delete this->fbo;
-    this->fbo = new Fbo(viewportSize.x / 2, viewportSize.y / 2, DepthBufferType::DEPTH_RBUF);
+    this->fbo = new Fbo(viewportSize.x, viewportSize.y, DepthBufferType::DEPTH_RBUF);
 
     delete this->fbo2;
     this->fbo2 = new Fbo(viewportSize.x, viewportSize.y, DepthBufferType::DEPTH_RBUF);
+
+    delete this->fbo3;
+    this->fbo3 = new Fbo(viewportSize.x, viewportSize.y, DepthBufferType::NONE);
+
+    delete this->fbo4;
+    this->fbo4 = new Fbo(viewportSize.x, viewportSize.y, DepthBufferType::NONE);
 }
 
 void ChessRenderer::OnClick() {
@@ -189,4 +176,6 @@ void ChessRenderer::OnClick() {
     Piece *piece = picker->Pick((int) mouseX, (int) mouseY);
     selectedPiece = piece;
 }
+
+
 

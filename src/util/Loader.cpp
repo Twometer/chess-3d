@@ -30,12 +30,16 @@ std::string Loader::ReadAllText(const std::string &path) {
 }
 
 GLuint Loader::LoadShader(const std::string &name) {
-    Logger::Info("Loading shader " + name);
-    std::string vertSource = ReadAllText("assets/shaders/" + name + ".v.glsl");
-    std::string fragSource = ReadAllText("assets/shaders/" + name + ".f.glsl");
+    return LoadShader(name, name);
+}
+
+GLuint Loader::LoadShader(const std::string &vname, const std::string &fname) {
+    Logger::Info("Loading shader " + vname + "/" + fname);
+    std::string vertSource = ReadAllText("assets/shaders/" + vname + ".v.glsl");
+    std::string fragSource = ReadAllText("assets/shaders/" + fname + ".f.glsl");
 
     if (vertSource.length() == 0 || fragSource.length() == 0) {
-        Logger::Error("Shader " + name + " is empty");
+        Logger::Error("Shader " + vname + "/" + fname + " is empty");
         return 0;
     }
 
@@ -65,8 +69,6 @@ GLuint Loader::LoadShader(const std::string &name) {
     glDeleteShader(vertShader);
     glDeleteShader(fragShader);
 
-    Logger::Info("Loaded shader " + name);
-
     return program;
 }
 
@@ -86,4 +88,3 @@ void Loader::CheckShader(const std::string &name, GLuint shader) {
         Logger::Error("[" + name + "] " + std::string(&errorMsg[0]));
     }
 }
-

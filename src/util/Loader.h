@@ -22,6 +22,8 @@ public:
 
     static GLuint LoadShader(const std::string &name);
 
+    static GLuint LoadShader(const std::string &vname, const std::string &fname);
+
     static Model *LoadModel(const std::string &name);
 };
 

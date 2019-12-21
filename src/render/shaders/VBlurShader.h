@@ -2,19 +2,19 @@
 // Created by Twometer on 20/12/2019.
 //
 
-#ifndef CHESS_3D_VGAUSSSHADER_H
-#define CHESS_3D_VGAUSSSHADER_H
+#ifndef CHESS_3D_VBLURSHADER_H
+#define CHESS_3D_VBLURSHADER_H
 
 #include "IShader.h"
 
-class VGaussShader : public IShader {
+class VBlurShader : public IShader {
 
 private:
     GLuint loc_targetHeight;
 
 public:
-    VGaussShader() {
-        Initialize("vgauss");
+    VBlurShader() {
+        Initialize("vblur", "blur");
     }
 
     void BindUniforms() override {
