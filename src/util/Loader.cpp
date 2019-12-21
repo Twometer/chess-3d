@@ -4,7 +4,7 @@
 
 #include "Loader.h"
 #include "Logger.h"
-#include "StlReader.h"
+#include "GlmReader.h"
 #include "../gl/Mesh.h"
 #include <fstream>
 #include <cstring>
@@ -72,7 +72,7 @@ GLuint Loader::LoadShader(const std::string &name) {
 
 Model *Loader::LoadModel(const std::string &name) {
     uint8_t *buf = ReadAllBytes("assets/models/" + name);
-    Model *model = StlReader::Load(buf);
+    Model *model = GlmReader::Load(buf);
     delete[] buf;
     return model;
 }

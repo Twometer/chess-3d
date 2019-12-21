@@ -25,5 +25,5 @@ void PieceRegistry::Initialize() {
     typeMap["queen"] = PieceType::Queen;
 
     for (auto &entry : typeMap)
-        models[entry.second] = Loader::LoadModel(entry.first + ".stl");
+        models[entry.second] = Loader::LoadModel(entry.first + ".glm");
 }

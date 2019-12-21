@@ -117,6 +117,7 @@ void ChessRenderer::RenderFrame() {
     glDisable(GL_CULL_FACE);
     glDepthMask(false);
 
+    // TODO Why does copying from FBO to FBO not work?
     Postproc::Start();
     hGaussShader->Bind();
     hGaussShader->SetTargetWidth(viewportSize.x / 2);

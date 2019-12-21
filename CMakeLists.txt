@@ -21,7 +21,7 @@ add_executable(chess_3d
         src/gl/Mesh.cpp
         src/gl/Model.cpp
         src/gl/Fbo.cpp
-        src/util/StlReader.cpp
+        src/util/GlmReader.cpp
         src/render/ChessRenderer.cpp
         src/render/Camera.cpp
         src/render/Postproc.cpp
