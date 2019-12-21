@@ -93,7 +93,7 @@ void ChessRenderer::DrawSelection(glm::mat4 mat, glm::vec2 position) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     boardShader->Bind();
     boardShader->SetMvpMatrix(mat);
-    selectionShader->SetPosition(position);
+    boardShader->SetPosition(position);
     PieceRegistry::GetModel(selectedPiece->type)->Draw();
     fbo2->Unbind();
 
@@ -107,15 +107,16 @@ void ChessRenderer::DrawSelection(glm::mat4 mat, glm::vec2 position) {
     Postproc::Copy(fbo, fbo3);
 
     vGaussShader->Bind();
-    vGaussShader->SetTargetHeight(fbo4->GetHeight());
-    Postproc::Copy(fbo3, nullptr);
+    vGaussShader->SetTargetHeight(viewportSize.y);
+    for (int i = 0; i < 5; i++)
+        Postproc::Copy(fbo3, nullptr);
 
-    Postproc::Copy(fbo3, nullptr);
     copyShader->Bind();
     Postproc::Copy(fbo2, nullptr);
+    glDepthMask(true);
 
     Postproc::Stop();
-    glDepthMask(true);
+
     glEnable(GL_CULL_FACE);
 }
 
@@ -164,9 +165,6 @@ void ChessRenderer::OnViewportSizeChanged(glm::vec2 viewportSize) {
 
     delete this->fbo3;
     this->fbo3 = new Fbo(viewportSize.x, viewportSize.y, DepthBufferType::NONE);
-
-    delete this->fbo4;
-    this->fbo4 = new Fbo(viewportSize.x, viewportSize.y, DepthBufferType::NONE);
 }
 
 void ChessRenderer::OnClick() {
