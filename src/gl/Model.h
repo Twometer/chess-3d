@@ -20,7 +20,7 @@ private:
 public:
     static Model *Create(Mesh *mesh);
 
-    void Draw();
+    void Render();
 
 };
 

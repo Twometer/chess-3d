@@ -20,7 +20,7 @@ void SkyboxRenderer::Render(Camera *camera) {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, texture);
 
-    model->Draw();
+    model->Render();
 
     shader->Unbind();
 }

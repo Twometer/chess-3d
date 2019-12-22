@@ -37,6 +37,7 @@ private:
     Fbo *fbo3 = nullptr;
 
     SkyboxRenderer *skyboxRenderer;
+    Model *bottomModel;
 
     static glm::vec2 viewportSize;
     glm::vec2 windowSize;

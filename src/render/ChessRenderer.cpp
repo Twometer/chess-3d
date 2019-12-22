@@ -8,6 +8,7 @@
 #include "../model/Ruleset.h"
 #include "../model/PieceRegistry.h"
 #include "Postproc.h"
+#include "../util/Loader.h"
 
 glm::vec2 ChessRenderer::viewportSize;
 
@@ -43,6 +44,7 @@ void ChessRenderer::Initialize() {
     vGaussShader = new VBlurShader();
 
     skyboxRenderer = new SkyboxRenderer();
+    bottomModel = Loader::LoadModel("bottom.glm");
 }
 
 void ChessRenderer::RenderFrame() {
@@ -87,11 +89,12 @@ void ChessRenderer::RenderFrame() {
             }
 
             boardShader->SetPosition(pos);
-            PieceRegistry::GetModel(piece->type)->Draw();
+            PieceRegistry::GetModel(piece->type)->Render();
         }
 
     glDisable(GL_CULL_FACE);
     skyboxRenderer->Render(camera);
+    // bottomModel->Render();
     glEnable(GL_CULL_FACE);
 
     if (selectedPiece != nullptr)
@@ -109,7 +112,7 @@ void ChessRenderer::DrawSelection(glm::mat4 mat, glm::vec2 position) {
     selectionShader->Bind();
     selectionShader->SetMvpMatrix(mat);
     selectionShader->SetPosition(position);
-    PieceRegistry::GetModel(selectedPiece->type)->Draw();
+    PieceRegistry::GetModel(selectedPiece->type)->Render();
     fbo->Unbind();
 
     // Non-Outline Pass
@@ -118,7 +121,7 @@ void ChessRenderer::DrawSelection(glm::mat4 mat, glm::vec2 position) {
     boardShader->Bind();
     boardShader->SetMvpMatrix(mat);
     boardShader->SetPosition(position);
-    PieceRegistry::GetModel(selectedPiece->type)->Draw();
+    PieceRegistry::GetModel(selectedPiece->type)->Render();
     fbo2->Unbind();
 
     glDisable(GL_CULL_FACE);

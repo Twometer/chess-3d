@@ -32,7 +32,7 @@ Model *Model::Create(Mesh *mesh) {
     return model;
 }
 
-void Model::Draw() {
+void Model::Render() {
     glBindVertexArray(vaoId);
 
     glEnableVertexAttribArray(0);

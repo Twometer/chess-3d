@@ -31,7 +31,7 @@ Piece *PickEngine::Pick(int mx, int my) {
             shader->SetPosition(pos);
 
             Model *model = PieceRegistry::GetModel(piece->type);
-            model->Draw();
+            model->Render();
         }
 
 
