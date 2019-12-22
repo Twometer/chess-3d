@@ -9,6 +9,7 @@
 #include <fstream>
 #include <cstring>
 #include <iostream>
+#include <lodepng.h>
 
 uint8_t *Loader::ReadAllBytes(const std::string &path) {
     std::ifstream file(path);
@@ -87,4 +88,32 @@ void Loader::CheckShader(const std::string &name, GLuint shader) {
         glGetShaderInfoLog(shader, infoLogLength, nullptr, &errorMsg[0]);
         Logger::Error("[" + name + "] " + std::string(&errorMsg[0]));
     }
+}
+
+Image Loader::LoadImage(const std::string &path) {
+    auto *image = new std::vector<uint8_t>();
+    unsigned int width, height;
+    unsigned error = lodepng::decode(*image, width, height, path.c_str());
+    if (error) Logger::Error("Failed to decode image: " + std::string(lodepng_error_text(error)));
+    return {&image->front(), static_cast<unsigned int>(image->size()), width, height};
+}
+
+GLuint Loader::LoadCubemap(const std::vector<std::string> &names) {
+    GLuint texture;
+    glGenTextures(1, &texture);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, texture);
+
+    for (int i = 0; i < names.size(); i++) {
+        Logger::Info("Loading texture " + names[i]);;
+        Image img = LoadImage("assets/textures/" + names[i] + ".png");
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, img.width, img.height, 0, GL_RGBA,
+                     GL_UNSIGNED_BYTE, img.ptr);
+    }
+
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    return texture;
 }

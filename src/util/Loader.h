@@ -10,8 +10,16 @@
 
 #include "../gl/Model.h"
 
+struct Image {
+    uint8_t *ptr;
+    unsigned int size;
+    unsigned int width;
+    unsigned int height;
+};
+
 class Loader {
 private:
+    static Image LoadImage(const std::string &path);
 
     static void CheckShader(const std::string &name, GLuint shader);
 
@@ -25,6 +33,8 @@ public:
     static GLuint LoadShader(const std::string &vname, const std::string &fname);
 
     static Model *LoadModel(const std::string &name);
+
+    static GLuint LoadCubemap(const std::vector<std::string> &names);
 };
 
 

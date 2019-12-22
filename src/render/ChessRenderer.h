@@ -14,6 +14,7 @@
 #include "shaders/SelectionShader.h"
 #include "shaders/HBlurShader.h"
 #include "shaders/VBlurShader.h"
+#include "SkyboxRenderer.h"
 #include <GLFW/glfw3.h>
 
 class ChessRenderer {
@@ -34,7 +35,8 @@ private:
     Fbo *fbo = nullptr;
     Fbo *fbo2 = nullptr;
     Fbo *fbo3 = nullptr;
-    Fbo *fbo4 = nullptr;
+
+    SkyboxRenderer *skyboxRenderer;
 
     static glm::vec2 viewportSize;
     glm::vec2 windowSize;

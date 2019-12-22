@@ -24,6 +24,7 @@ add_executable(chess_3d
         src/gl/Fbo.cpp
         src/util/GlmReader.cpp
         src/render/ChessRenderer.cpp
+        src/render/SkyboxRenderer.cpp
         src/render/Camera.cpp
         src/render/Postproc.cpp
         src/render/PickEngine.cpp

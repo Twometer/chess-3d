@@ -41,6 +41,8 @@ void ChessRenderer::Initialize() {
     selectionShader = new SelectionShader();
     hGaussShader = new HBlurShader();
     vGaussShader = new VBlurShader();
+
+    skyboxRenderer = new SkyboxRenderer();
 }
 
 void ChessRenderer::RenderFrame() {
@@ -69,6 +71,10 @@ void ChessRenderer::RenderFrame() {
             boardShader->SetPosition(pos);
             PieceRegistry::GetModel(piece->type)->Draw();
         }
+
+    glDisable(GL_CULL_FACE);
+    skyboxRenderer->Render(camera);
+    glEnable(GL_CULL_FACE);
 
     if (selectedPiece != nullptr)
         DrawSelection(worldMat, selectedPosition);

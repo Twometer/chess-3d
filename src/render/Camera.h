@@ -11,6 +11,9 @@ class Camera {
 private:
     glm::mat4 matrix;
 
+    glm::mat4 projectionMatrix;
+    glm::mat4 viewMatrix;
+
 public:
     float zoom = 15.0f;
 
@@ -21,6 +24,10 @@ public:
     glm::mat4 CalculateMatrix(glm::vec2 viewportSize);
 
     glm::mat4 GetMatrix() { return matrix; }
+
+    glm::mat4 GetProjectionMatrix() { return projectionMatrix; }
+
+    glm::mat4 GetViewMatrix() { return viewMatrix; }
 };
 
 
