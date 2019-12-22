@@ -53,7 +53,19 @@ void ChessRenderer::RenderFrame() {
 
     boardShader->Bind();
     boardShader->SetMvpMatrix(worldMat);
-    boardShader->SetCameraPos(camera->position);
+
+    float yaw = glm::radians(camera->rotation.x);
+    float pitch = glm::radians(camera->rotation.y);
+
+    glm::vec3 direction(
+            cos(pitch) * sin(yaw),
+            sin(pitch),
+            cos(pitch) * cos(yaw)
+    );
+
+    direction *= camera->zoom;
+
+    boardShader->SetCameraPos(-direction);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxRenderer->GetTexture());
     glm::vec2 selectedPosition;
@@ -65,7 +77,7 @@ void ChessRenderer::RenderFrame() {
 
             // 0.5 means refract and reflect, 1.0 means reflect only
             // so white team is glass and black is mirror
-            float envMix = piece->team == White ? 0.5f : 1.0f;
+            float envMix = piece->team == White ? 0.0f : 1.0f;
             boardShader->SetEnvMix(envMix);
 
             glm::vec2 pos(x, y);

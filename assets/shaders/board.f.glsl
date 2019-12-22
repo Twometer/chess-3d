@@ -20,5 +20,5 @@ void main() {
     vec4 refractedColour = texture(skybox, refracted);
     vec4 envColor = mix(reflectedColour, refractedColour, envMix);
 
-    color = mix(color, envColor, 1.0);
+    color = mix(color, envColor, 0.8);
 }
