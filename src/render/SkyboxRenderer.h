@@ -26,6 +26,7 @@ public:
 
     void Render(Camera *camera);
 
+    GLuint GetTexture();
 };
 
 

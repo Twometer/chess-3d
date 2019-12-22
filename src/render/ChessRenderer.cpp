@@ -46,8 +46,6 @@ void ChessRenderer::Initialize() {
 }
 
 void ChessRenderer::RenderFrame() {
-
-
     glViewport(0, 0, viewportSize.x, viewportSize.y);
     glClearColor(0.8f, 0.8f, 0.8f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -55,12 +53,20 @@ void ChessRenderer::RenderFrame() {
 
     boardShader->Bind();
     boardShader->SetMvpMatrix(worldMat);
+    boardShader->SetCameraPos(camera->position);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxRenderer->GetTexture());
     glm::vec2 selectedPosition;
 
     for (int x = 0; x < 8; x++)
         for (int y = 0; y < 8; y++) {
             Piece *piece = board->GetPiece(glm::vec2(x, y));
             if (piece == nullptr) continue;
+
+            // 0.5 means refract and reflect, 1.0 means reflect only
+            // so white team is glass and black is mirror
+            float envMix = piece->team == White ? 0.5f : 1.0f;
+            boardShader->SetEnvMix(envMix);
 
             glm::vec2 pos(x, y);
             if (piece == selectedPiece) {

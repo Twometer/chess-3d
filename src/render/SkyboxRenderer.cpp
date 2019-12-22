@@ -25,3 +25,7 @@ void SkyboxRenderer::Render(Camera *camera) {
     shader->Unbind();
 }
 
+GLuint SkyboxRenderer::GetTexture() {
+    return texture;
+}
+
