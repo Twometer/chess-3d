@@ -10,7 +10,8 @@
 class SelectionShader : public IShader {
 
 private:
-    GLuint loc_mvpMatrix;
+    GLuint loc_cameraMatrix;
+    GLuint loc_modelMatrix;
     GLuint loc_position;
 
 public:
@@ -19,7 +20,8 @@ public:
     }
 
     void BindUniforms() override {
-        loc_mvpMatrix = glGetUniformLocation(id, "mvpMatrix");
+        loc_cameraMatrix = glGetUniformLocation(id, "cameraMatrix");
+        loc_modelMatrix = glGetUniformLocation(id, "modelMatrix");
         loc_position = glGetUniformLocation(id, "position");
     }
 
@@ -27,8 +29,12 @@ public:
         LoadVec2(loc_position, position);
     }
 
-    void SetMvpMatrix(glm::mat4 matrix) {
-        LoadMatrix(loc_mvpMatrix, matrix);
+    void SetCameraMatrix(glm::mat4 matrix) {
+        LoadMatrix(loc_cameraMatrix, matrix);
+    }
+
+    void SetModelMatrix(glm::mat4 matrix) {
+        LoadMatrix(loc_modelMatrix, matrix);
     }
 
 };

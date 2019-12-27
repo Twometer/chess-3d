@@ -54,11 +54,7 @@ void ChessRenderer::RenderFrame() {
     glm::mat4 worldMat = camera->CalculateMatrix(viewportSize);
 
     boardShader->Bind();
-    boardShader->SetMvpMatrix(worldMat);
-
-    float yaw = glm::radians(camera->rotation.x);
-    float pitch = glm::radians(camera->rotation.y);
-
+    boardShader->SetCameraMatrix(worldMat);
     boardShader->SetCameraPos(camera->GetEyePosition());
 
     glActiveTexture(GL_TEXTURE0);
@@ -76,6 +72,7 @@ void ChessRenderer::RenderFrame() {
                 continue;
             }
 
+            boardShader->SetModelMatrix(GetModelMatrix(piece));
             DrawPiece(piece, pos);
         }
 
@@ -98,7 +95,8 @@ void ChessRenderer::DrawSelection(glm::mat4 mat, glm::vec2 position) {
     glClearColor(0, 0.62f, 1.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     selectionShader->Bind();
-    selectionShader->SetMvpMatrix(mat);
+    selectionShader->SetCameraMatrix(mat);
+    selectionShader->SetModelMatrix(GetModelMatrix(selectedPiece));
     selectionShader->SetPosition(position);
     PieceRegistry::GetModel(selectedPiece->type)->Render();
     fbo->Unbind();
@@ -107,7 +105,8 @@ void ChessRenderer::DrawSelection(glm::mat4 mat, glm::vec2 position) {
     fbo2->Bind();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     boardShader->Bind();
-    boardShader->SetMvpMatrix(mat);
+    boardShader->SetCameraMatrix(mat);
+    boardShader->SetModelMatrix(GetModelMatrix(selectedPiece));
     DrawPiece(selectedPiece, position);
     fbo2->Unbind();
 
@@ -202,6 +201,14 @@ void ChessRenderer::DrawPiece(Piece *piece, glm::vec2 position) {
 
     boardShader->SetPosition(position);
     PieceRegistry::GetModel(piece->type)->Render();
+}
+
+glm::mat4 ChessRenderer::GetModelMatrix(Piece *piece) {
+    if (piece->type == Knight) {
+        float rot = glm::radians(piece->team == White ? -90.f : 90.f);
+        return glm::rotate(glm::mat4(1.0f), rot, glm::vec3(0, 1, 0));
+    }
+    return glm::mat4(1.0); // Identity
 }
 
 

@@ -10,7 +10,8 @@
 class BoardShader : public IShader {
 
 private:
-    GLuint loc_mvpMatrix;
+    GLuint loc_cameraMatrix;
+    GLuint loc_modelMatrix;
     GLuint loc_position;
     GLuint loc_cameraPos;
     GLuint loc_environFac;
@@ -22,7 +23,8 @@ public:
     }
 
     void BindUniforms() override {
-        loc_mvpMatrix = glGetUniformLocation(id, "mvpMatrix");
+        loc_cameraMatrix = glGetUniformLocation(id, "cameraMatrix");
+        loc_modelMatrix = glGetUniformLocation(id, "modelMatrix");
         loc_position = glGetUniformLocation(id, "position");
         loc_cameraPos = glGetUniformLocation(id, "cameraPos");
         loc_environFac = glGetUniformLocation(id, "environFac");
@@ -37,7 +39,6 @@ public:
         glUniform1f(loc_diffuseFac, envMix);
     }
 
-
     void SetCameraPos(glm::vec3 position) {
         LoadVec3(loc_cameraPos, position);
     }
@@ -46,8 +47,12 @@ public:
         LoadVec2(loc_position, position);
     }
 
-    void SetMvpMatrix(glm::mat4 matrix) {
-        LoadMatrix(loc_mvpMatrix, matrix);
+    void SetCameraMatrix(glm::mat4 matrix) {
+        LoadMatrix(loc_cameraMatrix, matrix);
+    }
+
+    void SetModelMatrix(glm::mat4 matrix) {
+        LoadMatrix(loc_modelMatrix, matrix);
     }
 
 };
