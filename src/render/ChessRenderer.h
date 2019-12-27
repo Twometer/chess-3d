@@ -44,6 +44,8 @@ private:
 
     void HandleInput();
 
+    void DrawPiece(Piece *piece, glm::vec2 position);
+
     void DrawSelection(glm::mat4 mat, glm::vec2 position);
 
 public:

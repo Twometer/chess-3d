@@ -14,12 +14,16 @@ private:
     glm::mat4 projectionMatrix;
     glm::mat4 viewMatrix;
 
+    glm::vec3 eyePosition;
+
 public:
     float zoom = 15.0f;
 
     glm::vec3 position;
 
     glm::vec2 rotation = glm::vec2(0, -150);
+
+    glm::vec3 GetEyePosition();
 
     glm::mat4 CalculateMatrix(glm::vec2 viewportSize);
 

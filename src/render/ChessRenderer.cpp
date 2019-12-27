@@ -59,15 +59,8 @@ void ChessRenderer::RenderFrame() {
     float yaw = glm::radians(camera->rotation.x);
     float pitch = glm::radians(camera->rotation.y);
 
-    glm::vec3 direction(
-            cos(pitch) * sin(yaw),
-            sin(pitch),
-            cos(pitch) * cos(yaw)
-    );
+    boardShader->SetCameraPos(camera->GetEyePosition());
 
-    direction *= camera->zoom;
-
-    boardShader->SetCameraPos(-direction);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxRenderer->GetTexture());
     glm::vec2 selectedPosition;
@@ -77,23 +70,18 @@ void ChessRenderer::RenderFrame() {
             Piece *piece = board->GetPiece(glm::vec2(x, y));
             if (piece == nullptr) continue;
 
-            // 0.5 means refract and reflect, 1.0 means reflect only
-            // so white team is glass and black is mirror
-            float envMix = piece->team == White ? 0.0f : 1.0f;
-            boardShader->SetEnvMix(envMix);
-
             glm::vec2 pos(x, y);
             if (piece == selectedPiece) {
                 selectedPosition = pos;
                 continue;
             }
 
-            boardShader->SetPosition(pos);
-            PieceRegistry::GetModel(piece->type)->Render();
+            DrawPiece(piece, pos);
         }
 
     glDisable(GL_CULL_FACE);
     skyboxRenderer->Render(camera);
+
     // bottomModel->Render();
     glEnable(GL_CULL_FACE);
 
@@ -120,8 +108,7 @@ void ChessRenderer::DrawSelection(glm::mat4 mat, glm::vec2 position) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     boardShader->Bind();
     boardShader->SetMvpMatrix(mat);
-    boardShader->SetPosition(position);
-    PieceRegistry::GetModel(selectedPiece->type)->Render();
+    DrawPiece(selectedPiece, position);
     fbo2->Unbind();
 
     glDisable(GL_CULL_FACE);
@@ -200,6 +187,21 @@ void ChessRenderer::OnClick() {
 
     Piece *piece = picker->Pick((int) mouseX, (int) mouseY);
     selectedPiece = piece;
+}
+
+void ChessRenderer::DrawPiece(Piece *piece, glm::vec2 position) {
+    // Goal: White is reflective, black is glassy
+
+    // Environment blending factor. 0 means full reflection, 1 means full refraction
+    float envFac = piece->team == White ? 0.0f : 0.95f;
+    boardShader->SetEnvironFac(envFac);
+
+    // Diffuse blending factor. 0 means full diffuse, 1 means full environment
+    float difFac = piece->team == White ? 0.8f : 0.90f;
+    boardShader->SetDiffuseFac(difFac);
+
+    boardShader->SetPosition(position);
+    PieceRegistry::GetModel(piece->type)->Render();
 }
 
 

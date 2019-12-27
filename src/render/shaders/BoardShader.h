@@ -13,7 +13,8 @@ private:
     GLuint loc_mvpMatrix;
     GLuint loc_position;
     GLuint loc_cameraPos;
-    GLuint loc_envMix;
+    GLuint loc_environFac;
+    GLuint loc_diffuseFac;
 
 public:
     BoardShader() {
@@ -24,12 +25,18 @@ public:
         loc_mvpMatrix = glGetUniformLocation(id, "mvpMatrix");
         loc_position = glGetUniformLocation(id, "position");
         loc_cameraPos = glGetUniformLocation(id, "cameraPos");
-        loc_envMix = glGetUniformLocation(id, "envMix");
+        loc_environFac = glGetUniformLocation(id, "environFac");
+        loc_diffuseFac = glGetUniformLocation(id, "diffuseFac");
     }
 
-    void SetEnvMix(float envMix) {
-        glUniform1f(loc_envMix, envMix);
+    void SetEnvironFac(float envMix) {
+        glUniform1f(loc_environFac, envMix);
     }
+
+    void SetDiffuseFac(float envMix) {
+        glUniform1f(loc_diffuseFac, envMix);
+    }
+
 
     void SetCameraPos(glm::vec3 position) {
         LoadVec3(loc_cameraPos, position);

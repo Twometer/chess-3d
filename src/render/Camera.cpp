@@ -24,10 +24,15 @@ glm::mat4 Camera::CalculateMatrix(glm::vec2 viewportSize) {
     );
 
     glm::vec3 up = glm::cross(right, -direction);
+    eyePosition = (-direction * zoom) + position;
 
     projectionMatrix = glm::perspective(glm::radians(70.0f), (float) viewportSize.x / (float) viewportSize.y,
                                         0.01f, 2000.0f);
-    viewMatrix = glm::lookAt((-direction * zoom) + position, position, up);
+    viewMatrix = glm::lookAt(eyePosition, position, up);
 
     return matrix = (projectionMatrix * viewMatrix);
+}
+
+glm::vec3 Camera::GetEyePosition() {
+    return eyePosition;
 }
