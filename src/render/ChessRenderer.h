@@ -54,6 +54,8 @@ private:
 
     void DrawSelection(glm::mat4 mat);
 
+    void SelectPiece(Piece *piece);
+
 public:
     explicit ChessRenderer(GLFWwindow *window);
 

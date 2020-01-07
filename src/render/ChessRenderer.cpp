@@ -186,27 +186,33 @@ void ChessRenderer::OnClick() {
     glfwGetCursorPos(window, &mouseX, &mouseY);
 
     PickResult pickResult = picker->Pick((int) mouseX, (int) mouseY);
-    if (pickResult.type == PIECE && pickResult.piece->team == gameState->currentTeam)
-        selectedPiece = pickResult.piece;
-    else if (pickResult.type == BOARD) {
-        glm::vec2 vec = pickResult.boardPos;
-        if (!board->CheckPosition(vec))
-            selectedPiece = nullptr;
-        else {
-            if (selectedPiece == nullptr)
-                selectedPiece = board->GetPiece(vec);
-            else {
-                MoveResult result = board->Move(selectedPiece->position, pickResult.boardPos);
-                if (result.allowed) {
-                    selectedPiece = nullptr;
-                    gameState->SwitchTeam();
+    glm::vec2 vec = pickResult.boardPos;
+
+    switch (pickResult.type) {
+        case PIECE:
+            SelectPiece(pickResult.piece);
+            break;
+
+        case BOARD:
+            if (!board->CheckPosition(vec)) {
+                selectedPiece = nullptr;
+            } else {
+                if (selectedPiece == nullptr)
+                    SelectPiece(board->GetPiece(vec));
+                else {
+                    MoveResult result = board->Move(selectedPiece->position, pickResult.boardPos);
+                    if (result.allowed) {
+                        selectedPiece = nullptr;
+                        gameState->SwitchTeam();
+                    }
                 }
             }
-        }
+            break;
 
-    } else
-        selectedPiece = nullptr;
-
+        case MISS:
+            selectedPiece = nullptr;
+            break;
+    }
 }
 
 void ChessRenderer::OnKeyPressed(int key) {
@@ -239,6 +245,11 @@ glm::mat4 ChessRenderer::GetModelMatrix(Piece *piece) {
 
 void ChessRenderer::OnMousePositionChanged(double posx, double posy) {
     mousePos = glm::vec2(posx, posy);
+}
+
+void ChessRenderer::SelectPiece(Piece *piece) {
+    if (piece == nullptr || piece->team == gameState->currentTeam)
+        selectedPiece = piece;
 }
 
 
