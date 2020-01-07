@@ -65,6 +65,8 @@ public:
 
     void OnViewportSizeChanged(glm::vec2 viewportSize);
 
+    void OnKeyPressed(int key);
+
     void OnClick();
 
     static inline glm::vec2 GetViewportSize() {

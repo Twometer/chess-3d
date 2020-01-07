@@ -190,6 +190,11 @@ void ChessRenderer::OnClick() {
     selectedPiece = piece;
 }
 
+void ChessRenderer::OnKeyPressed(int key) {
+    if (key == GLFW_KEY_F3)
+        guiRenderer->showDebug = !guiRenderer->showDebug;
+}
+
 void ChessRenderer::DrawPiece(Piece *piece, glm::vec2 position) {
     // Goal: White is reflective, black is glassy
 

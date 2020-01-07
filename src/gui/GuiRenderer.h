@@ -9,6 +9,7 @@
 #include "font/Font.h"
 #include "../render/shaders/FontShader.h"
 #include "font/FontRenderer.h"
+#include "Debug.h"
 
 class GuiRenderer {
 private:
@@ -16,7 +17,11 @@ private:
 
     FontRenderer *fontRenderer;
 
+    Debug *debug;
+
 public:
+    bool showDebug = false;
+
     GuiRenderer();
 
     void Render();

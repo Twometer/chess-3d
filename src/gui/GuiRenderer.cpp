@@ -6,15 +6,20 @@
 #include "GuiRenderer.h"
 #include "../util/Loader.h"
 
+
 GuiRenderer::GuiRenderer() {
     font = Loader::LoadFont("lucida");
     fontRenderer = new FontRenderer(font);
+    debug = new Debug();
 }
+
 
 void GuiRenderer::Render() {
     glDisable(GL_CULL_FACE);
     glDisable(GL_DEPTH_TEST);
-    fontRenderer->Render("Hello world", 10, 10, 0.5f);
+
+    if (showDebug)
+        debug->Render(fontRenderer);
 
     glEnable(GL_DEPTH_TEST);
 }
