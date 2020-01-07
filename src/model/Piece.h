@@ -16,6 +16,7 @@ struct Piece {
     Rule *rule;
     PieceType type;
     Team team;
+    glm::vec2 position;
 
     Piece(Rule *rule, PieceType type, Team team) {
         this->rule = rule;

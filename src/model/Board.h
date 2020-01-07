@@ -20,8 +20,6 @@ private:
     Ruleset *ruleset;
 
 private:
-    static bool CheckPosition(glm::vec2 position);
-
     static inline int GetIndex(int x, int y);
 
     Piece *CreatePiece(PieceType type, Team team);
@@ -44,6 +42,8 @@ public:
     void SetPiece(glm::vec2 vec, Piece *piece);
 
     void SetPiece(glm::vec2 vec, PieceType type, Team team);
+
+    static bool CheckPosition(glm::vec2 position);
 };
 
 

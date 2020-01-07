@@ -34,8 +34,10 @@ MoveResult Board::Move(glm::vec2 from, glm::vec2 to) {
 
     Piece *piece = GetPiece(from);
     MoveResult result = piece->rule->TryMove(piece, from, to);
-    if (result.allowed)
+    if (result.allowed) {
         SetPiece(to, piece);
+        SetPiece(from, nullptr);
+    }
 
     return result;
 }
@@ -55,6 +57,8 @@ Piece *Board::GetPiece(glm::vec2 vec) {
 
 void Board::SetPiece(glm::vec2 vec, Piece *piece) {
     pieces[GetIndex(vec.x, vec.y)] = piece;
+    if (piece != nullptr)
+        piece->position = vec;
 }
 
 void Board::SetPiece(glm::vec2 vec, PieceType type, Team team) {

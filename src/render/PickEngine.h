@@ -11,6 +11,18 @@
 #include "../model/Piece.h"
 #include "shaders/PickShader.h"
 
+enum PickResultType {
+    MISS,
+    BOARD,
+    PIECE
+};
+
+struct PickResult {
+    PickResultType type;
+    glm::vec2 boardPos;
+    Piece *piece;
+};
+
 class PickEngine {
 
 private:
@@ -22,13 +34,14 @@ private:
 
     PickShader *shader;
 
+    Piece *PickPiece(int x, int y);
+
 public:
     PickEngine(Board *board, Camera *camera);
 
     void Resize(int width, int height);
 
-    Piece *Pick(int x, int y);
-
+    PickResult Pick(int x, int y);
 
 };
 

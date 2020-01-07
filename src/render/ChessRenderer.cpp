@@ -62,28 +62,21 @@ void ChessRenderer::RenderFrame() {
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxRenderer->GetTexture());
-    glm::vec2 selectedPosition;
 
     for (int x = 0; x < 8; x++)
         for (int y = 0; y < 8; y++) {
             Piece *piece = board->GetPiece(glm::vec2(x, y));
-            if (piece == nullptr) continue;
-
-            glm::vec2 pos(x, y);
-            if (piece == selectedPiece) {
-                selectedPosition = pos;
+            if (piece == nullptr || piece == selectedPiece)
                 continue;
-            }
 
             boardShader->SetModelMatrix(GetModelMatrix(piece));
-            DrawPiece(piece, pos);
+            DrawPiece(piece, glm::vec2(x, y));
         }
     glDisable(GL_CULL_FACE);
     skyboxRenderer->Render(camera);
 
     glEnable(GL_CULL_FACE);
-    if (selectedPiece != nullptr)
-        DrawSelection(worldMat, selectedPosition);
+    DrawSelection(worldMat);
 
     guiRenderer->Render();
 
@@ -91,7 +84,12 @@ void ChessRenderer::RenderFrame() {
     HandleInput();
 }
 
-void ChessRenderer::DrawSelection(glm::mat4 mat, glm::vec2 position) {
+void ChessRenderer::DrawSelection(glm::mat4 mat) {
+    if (selectedPiece == nullptr)
+        return;
+
+    glm::vec2 position = selectedPiece->position;
+
     // Outline pass
     fbo->Bind();
     glClearColor(0, 0.62f, 1.0f, 0.0f);
@@ -186,8 +184,21 @@ void ChessRenderer::OnClick() {
     double mouseX, mouseY;
     glfwGetCursorPos(window, &mouseX, &mouseY);
 
-    Piece *piece = picker->Pick((int) mouseX, (int) mouseY);
-    selectedPiece = piece;
+    PickResult pickResult = picker->Pick((int) mouseX, (int) mouseY);
+    if (pickResult.type == PIECE)
+        selectedPiece = pickResult.piece;
+    else if (pickResult.type == BOARD) {
+        glm::vec2 vec = pickResult.boardPos;
+        if (!board->CheckPosition(vec))
+            selectedPiece = nullptr;
+        else {
+            MoveResult result = board->Move(selectedPiece->position, pickResult.boardPos);
+            printf("Move result: %d\n", result.allowed);
+        }
+
+    } else
+        selectedPiece = nullptr;
+
 }
 
 void ChessRenderer::OnKeyPressed(int key) {
