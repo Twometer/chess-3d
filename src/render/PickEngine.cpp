@@ -67,7 +67,7 @@ PickResult PickEngine::PickPosition(int mx, int my) {
             return {MISS, glm::vec2(), nullptr};
     }
 
-    return {BOARD, glm::vec2(floor(pos.x / 2.0f), floor(pos.z / 2.0f)), nullptr};
+    return {BOARD, glm::vec2(floor((pos.x + 1) / 2.0f), floor((pos.z + 1) / 2.0f)), nullptr};
 }
 
 

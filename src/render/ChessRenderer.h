@@ -23,6 +23,7 @@ private:
     GLFWwindow *window;
     static glm::vec2 viewportSize;
     glm::vec2 windowSize;
+    glm::vec2 mousePos;
 
     Board *board;
 
@@ -48,7 +49,7 @@ private:
 
     glm::mat4 GetModelMatrix(Piece *piece);
 
-    void DrawPiece(Piece *piece, glm::vec2 position);
+    void DrawPiece(Piece *piece);
 
     void DrawSelection(glm::mat4 mat);
 
@@ -66,6 +67,8 @@ public:
     void OnViewportSizeChanged(glm::vec2 viewportSize);
 
     void OnKeyPressed(int key);
+
+    void OnMousePositionChanged(double posx, double posy);
 
     void OnClick();
 

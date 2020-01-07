@@ -33,6 +33,10 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
         renderer->OnKeyPressed(key);
 }
 
+void cursor_position_callback(GLFWwindow *window, double xpos, double ypos) {
+    renderer->OnMousePositionChanged(xpos, ypos);
+}
+
 int main() {
     Logger::Info("Initializing rendering context...");
     if (!glfwInit()) {
@@ -73,6 +77,7 @@ int main() {
     glfwSetWindowSizeCallback(window, window_size_callback);
     glfwSetMouseButtonCallback(window, mouse_button_callback);
     glfwSetKeyCallback(window, key_callback);
+    glfwSetCursorPosCallback(window, cursor_position_callback);
 
     Logger::Info("Successfully initialized");
 

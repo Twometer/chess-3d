@@ -70,7 +70,7 @@ void ChessRenderer::RenderFrame() {
                 continue;
 
             boardShader->SetModelMatrix(GetModelMatrix(piece));
-            DrawPiece(piece, glm::vec2(x, y));
+            DrawPiece(piece);
         }
     glDisable(GL_CULL_FACE);
     skyboxRenderer->Render(camera);
@@ -107,7 +107,7 @@ void ChessRenderer::DrawSelection(glm::mat4 mat) {
     boardShader->Bind();
     boardShader->SetCameraMatrix(mat);
     boardShader->SetModelMatrix(GetModelMatrix(selectedPiece));
-    DrawPiece(selectedPiece, position);
+    DrawPiece(selectedPiece);
     fbo2->Unbind();
 
     glDisable(GL_CULL_FACE);
@@ -206,7 +206,7 @@ void ChessRenderer::OnKeyPressed(int key) {
         guiRenderer->showDebug = !guiRenderer->showDebug;
 }
 
-void ChessRenderer::DrawPiece(Piece *piece, glm::vec2 position) {
+void ChessRenderer::DrawPiece(Piece *piece) {
     // Goal: White is reflective, black is glassy
 
     // Environment blending factor. 0 means full reflection, 1 means full refraction
@@ -217,7 +217,7 @@ void ChessRenderer::DrawPiece(Piece *piece, glm::vec2 position) {
     float difFac = piece->team == White ? 0.8f : 0.90f;
     boardShader->SetDiffuseFac(difFac);
 
-    boardShader->SetPosition(position);
+    boardShader->SetPosition(piece->position);
     PieceRegistry::GetModel(piece->type)->Render();
 }
 
@@ -227,6 +227,10 @@ glm::mat4 ChessRenderer::GetModelMatrix(Piece *piece) {
         return glm::rotate(glm::mat4(1.0f), rot, glm::vec3(0, 1, 0));
     }
     return glm::mat4(1.0); // Identity
+}
+
+void ChessRenderer::OnMousePositionChanged(double posx, double posy) {
+    mousePos = glm::vec2(posx, posy);
 }
 
 

@@ -36,8 +36,6 @@ private:
 
     Piece *PickPiece(int x, int y);
 
-    PickResult PickPosition(int x, int y);
-
 public:
     PickEngine(Board *board, Camera *camera);
 
@@ -45,6 +43,7 @@ public:
 
     PickResult Pick(int x, int y);
 
+    PickResult PickPosition(int x, int y);
 };
 
 
