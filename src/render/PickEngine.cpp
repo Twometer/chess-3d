@@ -45,11 +45,7 @@ Piece *PickEngine::PickPiece(int mx, int my) {
     return board->GetPiece(pickPos);
 }
 
-PickResult PickEngine::Pick(int mx, int my) {
-    Piece *piece = PickPiece(mx, my);
-    if (piece != nullptr)
-        return {PIECE, glm::vec2(), piece};
-
+PickResult PickEngine::PickPosition(int mx, int my) {
     glm::vec3 deviceCoordinates = glm::vec3(
             (2.0f * mx) / ChessRenderer::GetViewportSize().x - 1.0f,
             1.0f - (2.0f * my) / ChessRenderer::GetViewportSize().y,
@@ -74,9 +70,22 @@ PickResult PickEngine::Pick(int mx, int my) {
     return {BOARD, glm::vec2(floor(pos.x / 2.0f), floor(pos.z / 2.0f)), nullptr};
 }
 
+
+PickResult PickEngine::Pick(int mx, int my) {
+    Piece *piece = PickPiece(mx, my);
+
+    // If no piece was selected, fall back to
+    // raytracing to determine position on the board
+
+    if (piece != nullptr)
+        return {PIECE, glm::vec2(), piece};
+    else return PickPosition(mx, my);
+}
+
 void PickEngine::Resize(int width, int height) {
     delete fbo;
     fbo = new Fbo(width, height, DepthBufferType::DEPTH_RBUF);
 }
+
 
 
