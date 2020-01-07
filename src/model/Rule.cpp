@@ -13,9 +13,9 @@ void Rule::ReadVecList(nlohmann::json &json, std::vector<glm::vec2> &vec) {
     }
 }
 
-MoveResult Rule::TryMove(Piece *piece, glm::vec2 from, glm::vec2 to) {
+MoveResult Rule::TryMove(Piece *piece, glm::vec2 to) {
     // Move direction relative to the team's base
-    glm::vec2 diff = to - from;
+    glm::vec2 diff = to - piece->position;
     if (piece->team == White)
         diff.y *= -1;
 

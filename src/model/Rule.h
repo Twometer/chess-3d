@@ -31,7 +31,7 @@ public:
 
     static Rule *Load(nlohmann::json &json);
 
-    MoveResult TryMove(Piece *piece, glm::vec2 from, glm::vec2 to);
+    MoveResult TryMove(Piece *piece, glm::vec2 to);
 
 };
 

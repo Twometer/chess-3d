@@ -42,7 +42,7 @@ private:
     Fbo *fbo3 = nullptr;
 
     SkyboxRenderer *skyboxRenderer;
-    Model *bottomModel;
+    Model *hintModel;
 
     GuiRenderer *guiRenderer;
 

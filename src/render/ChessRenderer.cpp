@@ -46,7 +46,7 @@ void ChessRenderer::Initialize() {
     vGaussShader = new VBlurShader();
 
     skyboxRenderer = new SkyboxRenderer();
-    bottomModel = Loader::LoadModel("bottom.glm");
+    hintModel = Loader::LoadModel("hint.glm");
 
     guiRenderer = new GuiRenderer(gameState);
 }
@@ -89,6 +89,21 @@ void ChessRenderer::DrawSelection(glm::mat4 mat) {
     if (selectedPiece == nullptr)
         return;
 
+    // Draw hint
+    selectionShader->Bind();
+    selectionShader->SetCameraMatrix(mat);
+    selectionShader->SetModelMatrix(glm::mat4(1.0f));
+
+    for (int x = 0; x < 8; x++)
+        for (int y = 0; y < 8; y++) {
+            bool allowed = selectedPiece->rule->TryMove(selectedPiece, glm::vec2(x, y)).allowed;
+            if (allowed) {
+                selectionShader->SetPosition(glm::vec2(x, y));
+                hintModel->Render();
+            }
+        }
+
+    // Draw selected model
     glm::vec2 position = selectedPiece->position;
 
     // Outline pass
