@@ -2,7 +2,6 @@
 // Created by Twometer on 21/12/2019.
 //
 
-#include <iostream>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "GlmReader.h"
@@ -27,7 +26,5 @@ Model *GlmReader::Load(uint8_t *buf) {
 
 glm::vec3 GlmReader::ReadVec3(Buffer &buf) {
     glm::vec3 vec = glm::vec3(buf.Read<float>(), buf.Read<float>(), buf.Read<float>());
-    glm::mat4 matrix = glm::rotate(glm::mat4(1.0), (float) glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-
-    return glm::vec3(matrix * glm::vec4(vec, 1.0f));
+    return glm::vec3(-vec.y, vec.x, vec.z);
 }
