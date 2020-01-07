@@ -16,7 +16,7 @@ void main() {
     vec4 worldPosition = (modelMatrix * vec4(vertexPosition, 1.0)) + vec4(position.x * 2, 0, position.y * 2, 0.0);
 
     gl_Position = cameraMatrix * worldPosition;
-    normal = normalize(vertexNormal);
+    normal = normalize((modelMatrix * vec4(vertexNormal, 1.0)).xyz);
 
     vec3 viewVector = normalize(worldPosition.xyz - cameraPos);
     reflected = reflect(viewVector, normal);

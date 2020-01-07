@@ -5,6 +5,7 @@
 #include <glad/glad.h>
 #include "GuiRenderer.h"
 #include "../util/Loader.h"
+#include "../render/ChessRenderer.h"
 
 
 GuiRenderer::GuiRenderer(GameState *gameState) {
@@ -21,10 +22,12 @@ void GuiRenderer::Render() {
     if (showDebug)
         debug->Render(fontRenderer);
 
+    glm::vec2 viewport = ChessRenderer::GetViewportSize();
+
     if (gameState->currentTeam == Black)
-        fontRenderer->Render("Schwarz ist am Zug", 5, 5, 0.5);
+        fontRenderer->RenderCentered("Schwarz ist am Zug", viewport.x / 2, viewport.y - 100, 0.75);
     else
-        fontRenderer->Render("Weiss ist am Zug", 5, 5, 0.5);
+        fontRenderer->RenderCentered("Weiss ist am Zug", viewport.x / 2, viewport.y - 100, 0.75);
 
     glEnable(GL_DEPTH_TEST);
 }

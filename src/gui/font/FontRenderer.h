@@ -24,6 +24,10 @@ public:
 
     explicit FontRenderer(Font *font);
 
+    int GetFontWidth(const std::string &value, float fontSize);
+
+    void RenderCentered(const std::string &value, int x, int y, float fontSize = 1.0f, glm::vec4 color = WHITE);
+
     void Render(const std::string &value, int x, int y, float fontSize = 1.0f, glm::vec4 color = WHITE);
 
 };

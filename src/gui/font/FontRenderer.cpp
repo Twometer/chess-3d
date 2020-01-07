@@ -68,3 +68,21 @@ void FontRenderer::Render(const std::string &value, int x, int y, float fontSize
     glDisableVertexAttribArray(0);
     glBindVertexArray(0);
 }
+
+void FontRenderer::RenderCentered(const std::string &value, int x, int y, float fontSize, glm::vec4 color) {
+    x -= GetFontWidth(value, fontSize) / 2;
+    Render(value, x, y, fontSize, color);
+}
+
+int FontRenderer::GetFontWidth(const std::string &value, float fontSize) {
+    int x = 0;
+    for (char c : value) {
+        Glyph *glyph = font->glyphs[static_cast<int>(c)];
+        if (glyph == nullptr)
+            continue;
+        x += (glyph->advance - 15.0f) * fontSize;
+    }
+    return x;
+}
+
+
