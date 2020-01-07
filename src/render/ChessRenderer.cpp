@@ -42,7 +42,7 @@ void ChessRenderer::Initialize() {
 
     boardShader = new BoardShader();
     copyShader = new CopyShader();
-    selectionShader = new SelectionShader();
+    shadelessShader = new ShadelessShader();
     hGaussShader = new HBlurShader();
     vGaussShader = new VBlurShader();
 
@@ -91,18 +91,23 @@ void ChessRenderer::DrawSelection(glm::mat4 mat) {
         return;
 
     // Draw hint
-    selectionShader->Bind();
-    selectionShader->SetCameraMatrix(mat);
-    selectionShader->SetModelMatrix(glm::mat4(1.0f));
+    shadelessShader->Bind();
+    shadelessShader->SetCameraMatrix(mat);
+    shadelessShader->SetModelMatrix(glm::mat4(1.0f));
 
     for (int x = 0; x < 8; x++)
         for (int y = 0; y < 8; y++) {
             MoveResultType type = selectedPiece->rule->TryMove(selectedPiece, glm::vec2(x, y)).resultType;
-            if (type == OK) {
-                selectionShader->SetPosition(glm::vec2(x, y));
-                hintModel->Render();
-            } else {
+            shadelessShader->SetPosition(glm::vec2(x, y));
 
+            if (type == OK) {
+                shadelessShader->SetColor(glm::vec4(0, 0.62f, 1.0f, 1.0f));
+                shadelessShader->SetModelMatrix(glm::mat4(1.0f));
+                hintModel->Render();
+            } else if (type == HIT) {
+                shadelessShader->SetColor(glm::vec4(1.0f, 0.38f, 0.0f, 0.5f));
+                shadelessShader->SetModelMatrix(glm::scale(glm::mat4(1.0f), glm::vec3(3.0f, 1.0f, 3.0f)));
+                hintModel->Render();
             }
         }
 
@@ -113,10 +118,11 @@ void ChessRenderer::DrawSelection(glm::mat4 mat) {
     fbo->Bind();
     glClearColor(0, 0.62f, 1.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    selectionShader->Bind();
-    selectionShader->SetCameraMatrix(mat);
-    selectionShader->SetModelMatrix(GetModelMatrix(selectedPiece));
-    selectionShader->SetPosition(position);
+    shadelessShader->Bind();
+    shadelessShader->SetColor(glm::vec4(0, 0.62f, 1.0f, 1.0f));
+    shadelessShader->SetCameraMatrix(mat);
+    shadelessShader->SetModelMatrix(GetModelMatrix(selectedPiece));
+    shadelessShader->SetPosition(position);
     PieceRegistry::GetModel(selectedPiece->type)->Render();
     fbo->Unbind();
 

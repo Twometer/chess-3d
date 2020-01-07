@@ -72,7 +72,8 @@ Rule *Rule::Load(nlohmann::json &json) {
  * Given a piece and a move vector, this method tries to find
  * a matching base vector from the rule definitions.
  * A base vector is a team-aligned vector defined in a rule that
- * specifies where a piece can move
+ * specifies where a piece can move. If this vector can't be found,
+ * that means that the move is not allowed.
  *
  * @param piece    The piece in question
  * @param move     The move that is tried to be matched

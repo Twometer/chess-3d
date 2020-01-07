@@ -11,7 +11,7 @@
 #include "Camera.h"
 #include "shaders/BoardShader.h"
 #include "shaders/CopyShader.h"
-#include "shaders/SelectionShader.h"
+#include "shaders/ShadelessShader.h"
 #include "shaders/HBlurShader.h"
 #include "shaders/VBlurShader.h"
 #include "SkyboxRenderer.h"
@@ -31,7 +31,7 @@ private:
     Camera *camera;
     BoardShader *boardShader;
     CopyShader *copyShader;
-    SelectionShader *selectionShader;
+    ShadelessShader *shadelessShader;
     HBlurShader *hGaussShader;
     VBlurShader *vGaussShader;
 
