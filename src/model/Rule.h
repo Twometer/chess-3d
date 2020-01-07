@@ -25,6 +25,10 @@ private:
 
     Rule() = default;
 
+    int CalculateRange(Piece *piece);
+
+    glm::vec2 *FindBaseVector(glm::vec2 move, int range);
+
     static void ReadVecList(nlohmann::json &json, std::vector<glm::vec2> &vec);
 
 public:

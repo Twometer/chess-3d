@@ -11,6 +11,7 @@
 #include "../util/Loader.h"
 
 glm::vec2 ChessRenderer::viewportSize;
+Board *ChessRenderer::board;
 
 ChessRenderer::ChessRenderer(GLFWwindow *window) {
     this->window = window;

@@ -25,7 +25,7 @@ private:
     glm::vec2 windowSize;
     glm::vec2 mousePos;
 
-    Board *board;
+    static Board *board;
     GameState *gameState;
 
     Camera *camera;
@@ -77,6 +77,10 @@ public:
 
     static inline glm::vec2 GetViewportSize() {
         return viewportSize;
+    }
+
+    static inline Board *GetBoard() {
+        return board;
     }
 };
 
