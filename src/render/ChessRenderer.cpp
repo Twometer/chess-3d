@@ -274,6 +274,9 @@ void ChessRenderer::OnMousePositionChanged(double posx, double posy) {
 void ChessRenderer::SelectPiece(Piece *piece) {
     if (piece == nullptr || piece->team == gameState->currentTeam)
         selectedPiece = piece;
+
+    if (gameState->gameStart < 0)
+        gameState->gameStart = glfwGetTime();
 }
 
 

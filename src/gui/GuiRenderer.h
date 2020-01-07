@@ -21,6 +21,8 @@ private:
 
     GameState *gameState;
 
+    std::string FormatTime(double time);
+
 public:
     bool showDebug = false;
 

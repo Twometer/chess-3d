@@ -9,6 +9,8 @@
 
 struct GameState {
 
+    double gameStart = -1;
+
     Team currentTeam = Team::White;
 
     void SwitchTeam() {

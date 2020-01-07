@@ -29,5 +29,24 @@ void GuiRenderer::Render() {
     else
         fontRenderer->RenderCentered("Weiss ist am Zug", viewport.x / 2, viewport.y - 100, 0.75);
 
+    if (gameState->gameStart > 0) {
+        double elapsed = glfwGetTime() - gameState->gameStart;
+        fontRenderer->RenderCentered(FormatTime(elapsed), viewport.x / 2, 5, 0.75);
+    } else {
+        fontRenderer->RenderCentered("00:00:00", viewport.x / 2, 5, 0.75);
+    }
+
     glEnable(GL_DEPTH_TEST);
+}
+
+std::string GuiRenderer::FormatTime(double time) {
+    int secs = (int) time % 60;
+    int mins = ((int) time / 60) % 60;
+    int hours = (int) time / 60 / 60;
+
+    std::string str_secs = (secs < 10 ? "0" : "") + std::to_string(secs);
+    std::string str_mins = (mins < 10 ? "0" : "") + std::to_string(mins);
+    std::string str_hours = (hours < 10 ? "0" : "") + std::to_string(hours);
+
+    return str_hours + ":" + str_mins + ":" + str_secs;
 }
