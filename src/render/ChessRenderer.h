@@ -15,11 +15,14 @@
 #include "shaders/HBlurShader.h"
 #include "shaders/VBlurShader.h"
 #include "SkyboxRenderer.h"
+#include "../gui/GuiRenderer.h"
 #include <GLFW/glfw3.h>
 
 class ChessRenderer {
 private:
     GLFWwindow *window;
+    static glm::vec2 viewportSize;
+    glm::vec2 windowSize;
 
     Board *board;
 
@@ -39,8 +42,7 @@ private:
     SkyboxRenderer *skyboxRenderer;
     Model *bottomModel;
 
-    static glm::vec2 viewportSize;
-    glm::vec2 windowSize;
+    GuiRenderer *guiRenderer;
 
     void HandleInput();
 

@@ -6,6 +6,7 @@
 #include "Logger.h"
 #include "GlmReader.h"
 #include "../gl/Mesh.h"
+#include "FontReader.h"
 #include <fstream>
 #include <cstring>
 #include <iostream>
@@ -117,4 +118,32 @@ GLuint Loader::LoadCubemap(const std::vector<std::string> &names) {
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
     return texture;
+}
+
+Font *Loader::LoadFont(const std::string &name) {
+    std::string pngPath = "assets/fonts/" + name + ".png";
+    std::string fntPath = "assets/fonts/" + name + ".fnt";
+
+    std::ifstream stream(fntPath);
+    Font *font = FontReader::ReadFont(stream);
+    font->texture = LoadTexture(pngPath);
+
+    return font;
+}
+
+Texture Loader::LoadTexture(const std::string &path) {
+    Image img = LoadImage(path);
+
+    GLuint texture;
+    glGenTextures(1, &texture);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img.width, img.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, img.ptr);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    return {texture, img.width, img.height};
 }

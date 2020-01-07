@@ -20,6 +20,7 @@ void ChessRenderer::Initialize() {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glEnable(GL_TEXTURE_2D);
+    glEnable(GL_TEXTURE_CUBE_MAP);
     glEnable(GL_MULTISAMPLE);
     glCullFace(GL_FRONT);
     glEnable(GL_BLEND);
@@ -45,6 +46,8 @@ void ChessRenderer::Initialize() {
 
     skyboxRenderer = new SkyboxRenderer();
     bottomModel = Loader::LoadModel("bottom.glm");
+
+    guiRenderer = new GuiRenderer();
 }
 
 void ChessRenderer::RenderFrame() {
@@ -75,17 +78,16 @@ void ChessRenderer::RenderFrame() {
             boardShader->SetModelMatrix(GetModelMatrix(piece));
             DrawPiece(piece, pos);
         }
-
     glDisable(GL_CULL_FACE);
     skyboxRenderer->Render(camera);
 
-    // bottomModel->Render();
     glEnable(GL_CULL_FACE);
-
     if (selectedPiece != nullptr)
         DrawSelection(worldMat, selectedPosition);
 
+    guiRenderer->Render();
 
+    glEnable(GL_CULL_FACE);
     HandleInput();
 }
 

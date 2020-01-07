@@ -9,6 +9,9 @@
 #include <string>
 
 #include "../gl/Model.h"
+#include "../gui/font/Font.h"
+
+#include "Texture.h"
 
 struct Image {
     uint8_t *ptr;
@@ -34,7 +37,11 @@ public:
 
     static Model *LoadModel(const std::string &name);
 
+    static Font *LoadFont(const std::string &name);
+
     static GLuint LoadCubemap(const std::vector<std::string> &names);
+
+    static Texture LoadTexture(const std::string &path);
 };
 
 

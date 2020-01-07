@@ -19,16 +19,19 @@ add_executable(chess_3d
         src/model/PieceRegistry.cpp
         src/util/Logger.cpp
         src/util/Loader.cpp
+        src/util/GlmReader.cpp
+        src/util/FontReader.cpp
         src/gl/Mesh.cpp
         src/gl/Model.cpp
         src/gl/Fbo.cpp
-        src/util/GlmReader.cpp
         src/render/ChessRenderer.cpp
         src/render/SkyboxRenderer.cpp
         src/render/Camera.cpp
         src/render/Postproc.cpp
         src/render/PickEngine.cpp
-        src/render/shaders/IShader.cpp)
+        src/render/shaders/IShader.cpp
+        src/gui/font/FontRenderer.cpp
+        src/gui/GuiRenderer.cpp)
 
 target_include_directories(chess_3d PRIVATE libs/glm libs/glfw/include inc)
 target_link_libraries(chess_3d glfw ${GLFW_LIBRARIES} nlohmann_json::nlohmann_json)

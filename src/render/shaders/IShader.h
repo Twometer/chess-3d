@@ -25,6 +25,8 @@ protected:
 
     void LoadVec3(int loc, glm::vec3 vector);
 
+    void LoadVec4(int loc, glm::vec4 vector);
+
 public:
 
     void Bind();
