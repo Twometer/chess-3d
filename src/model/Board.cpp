@@ -30,11 +30,11 @@ void Board::Initialize() {
 
 MoveResult Board::Move(glm::vec2 from, glm::vec2 to) {
     if (!CheckPosition(from) || !CheckPosition(to))
-        return MoveResult(false);
+        return MoveResult(INVALID);
 
     Piece *piece = GetPiece(from);
     MoveResult result = piece->rule->TryMove(piece, to);
-    if (result.allowed) {
+    if (result.resultType == OK) {
         SetPiece(to, piece);
         SetPiece(from, nullptr);
     }

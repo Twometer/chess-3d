@@ -27,9 +27,13 @@ private:
 
     int CalculateRange(Piece *piece);
 
-    glm::vec2 *FindBaseVector(glm::vec2 move, int range);
+    glm::vec2 FindBaseVector(Piece *piece, glm::vec2 move, bool &success);
 
     static void ReadVecList(nlohmann::json &json, std::vector<glm::vec2> &vec);
+
+    static glm::vec2 AlignDirection(Team team, glm::vec2 vec);
+
+    bool CanKill(Piece *a, Piece *b);
 
 public:
 

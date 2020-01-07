@@ -7,22 +7,24 @@
 
 #include <glm/vec2.hpp>
 
+enum MoveResultType {
+    INVALID,
+    OK,
+    HIT
+};
+
 struct MoveResult {
 
-    bool allowed;
+    MoveResultType resultType;
 
-    bool hit;
+    glm::vec2 hitPosition;
 
-    glm::vec2 hitPosition{};
-
-    explicit MoveResult(bool allowed) {
-        this->allowed = allowed;
-        this->hit = false;
+    explicit MoveResult(MoveResultType type) {
+        this->resultType = type;
     }
 
-    MoveResult(bool allowed, glm::vec2 hitPosition) {
-        this->allowed = allowed;
-        this->hit = true;
+    MoveResult(glm::vec2 hitPosition) {
+        this->resultType = HIT;
         this->hitPosition = hitPosition;
     }
 

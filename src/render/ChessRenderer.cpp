@@ -97,10 +97,12 @@ void ChessRenderer::DrawSelection(glm::mat4 mat) {
 
     for (int x = 0; x < 8; x++)
         for (int y = 0; y < 8; y++) {
-            bool allowed = selectedPiece->rule->TryMove(selectedPiece, glm::vec2(x, y)).allowed;
-            if (allowed) {
+            MoveResultType type = selectedPiece->rule->TryMove(selectedPiece, glm::vec2(x, y)).resultType;
+            if (type == OK) {
                 selectionShader->SetPosition(glm::vec2(x, y));
                 hintModel->Render();
+            } else {
+
             }
         }
 
@@ -217,7 +219,7 @@ void ChessRenderer::OnClick() {
                     SelectPiece(board->GetPiece(vec));
                 else {
                     MoveResult result = board->Move(selectedPiece->position, pickResult.boardPos);
-                    if (result.allowed) {
+                    if (result.resultType == OK) {
                         selectedPiece = nullptr;
                         gameState->SwitchTeam();
                     }
