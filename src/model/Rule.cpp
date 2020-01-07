@@ -19,30 +19,44 @@ MoveResult Rule::TryMove(Piece *piece, glm::vec2 to) {
 
     glm::vec2 diff = to - piece->position;
 
-    bool foundVec = false;
-    glm::vec2 baseVec = FindBaseVector(piece, diff, foundVec);
-
-    // The move does not match any base vectors defined
-    // in the ruleset and is therefore invalid.
-    if (!foundVec)
-        return MoveResult(INVALID);
-
     // Can't move where there's already someone
     Piece *other = board->GetPiece(to);
     if (other != nullptr) {
-        if (CanKill(piece, other))
-            return MoveResult(other->position);
-        else return MoveResult(INVALID);
+        if (piece->team == other->team)
+            return MoveResult(INVALID);
+        else if (!hit.empty()) {
+            bool success;
+            glm::vec2 dist = other->position - piece->position;
+            glm::vec2 baseVec = FindBaseVector(piece, dist, hit, success);
+            if (success)
+                return MoveResult(other->position);
+            else
+                return MoveResult(INVALID);
+        }
     }
+
+    // The move does not match any base vectors defined
+    // in the ruleset and is therefore invalid.
+    bool foundVec = false;
+    glm::vec2 baseVec = FindBaseVector(piece, diff, moves, foundVec);
+    if (!foundVec)
+        return MoveResult(INVALID);
 
     // If the piece can't jump, ray trace so that it
     // can't walk through other pieces.
     if (!mayJump) {
+        float dist = glm::length(diff);
         glm::vec2 src = piece->position;
-        while (src != to && board->CheckPosition(src)) {
+        while (src != to && Board::CheckPosition(src)) {
             src += baseVec;
-            if (board->GetPiece(src) != nullptr)
-                return MoveResult(INVALID);
+            Piece *other = board->GetPiece(src);
+            if (other != nullptr)
+                if (other->team == piece->team)
+                    return MoveResult(INVALID);
+                else if (glm::length(to - src) <= dist)
+                    return MoveResult(other->position);
+                else
+                    return MoveResult(INVALID);
         }
     }
 
@@ -58,13 +72,10 @@ Rule *Rule::Load(nlohmann::json &json) {
     if (json.contains("move"))
         ReadVecList(json["move"], rule->moves);
     else
-        for (int i = -1; i <= 1; i++)
-            for (int j = -1; j <= 1; j++)
-                rule->moves.emplace_back(i, j);
+        FillMoore(rule->moves);
 
     if (json.contains("hit"))
         ReadVecList(json["hit"], rule->hit);
-
     return rule;
 }
 
@@ -77,15 +88,17 @@ Rule *Rule::Load(nlohmann::json &json) {
  *
  * @param piece    The piece in question
  * @param move     The move that is tried to be matched
+ * @param vectors  This function can be applied to the movement as well as the hit check.
+ *                 We therefore have to specify which vector of vectors (lol) to search.
  * @param success  Whether a move was matched
  * @return The base-vector, in absolute coordinates
  */
-glm::vec2 Rule::FindBaseVector(Piece *piece, glm::vec2 move, bool &success) {
+glm::vec2 Rule::FindBaseVector(Piece *piece, glm::vec2 move, std::vector<glm::vec2> &vectors, bool &success) {
     int range = CalculateRange(piece);
 
     glm::vec2 aligned = AlignDirection(piece->team, move); // Align to team-relative coordinates
 
-    for (glm::vec2 &vec : moves) {
+    for (glm::vec2 &vec : vectors) {
         for (int i = 1; i <= range; i++)
             if (vec * (float) i == aligned) {
                 success = true;
@@ -99,7 +112,7 @@ glm::vec2 Rule::FindBaseVector(Piece *piece, glm::vec2 move, bool &success) {
 
 int Rule::CalculateRange(Piece *piece) {
     glm::vec2 position = piece->position;
-    if (infinite) return 8;
+    if (piece->rule->infinite) return 8;
     else if (piece->type == Pawn && (position.y == 1 || position.y == 6))
         return 2;
     else return 1;
@@ -113,8 +126,8 @@ glm::vec2 Rule::AlignDirection(Team team, glm::vec2 vec) {
     return vec;
 }
 
-bool Rule::CanKill(Piece *a, Piece *b) {
-    if (a->team == b->team)
-        return false;
-    return true;
+void Rule::FillMoore(std::vector<glm::vec2> &vec) {
+    for (int i = -1; i <= 1; i++)
+        for (int j = -1; j <= 1; j++)
+            vec.emplace_back(i, j);
 }

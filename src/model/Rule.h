@@ -25,15 +25,15 @@ private:
 
     Rule() = default;
 
-    int CalculateRange(Piece *piece);
+    static int CalculateRange(Piece *piece);
 
-    glm::vec2 FindBaseVector(Piece *piece, glm::vec2 move, bool &success);
+    static glm::vec2 FindBaseVector(Piece *piece, glm::vec2 move, std::vector<glm::vec2> &vectors, bool &success);
 
     static void ReadVecList(nlohmann::json &json, std::vector<glm::vec2> &vec);
 
     static glm::vec2 AlignDirection(Team team, glm::vec2 vec);
 
-    bool CanKill(Piece *a, Piece *b);
+    static void FillMoore(std::vector<glm::vec2> &vec);
 
 public:
 
