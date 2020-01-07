@@ -35,6 +35,7 @@ void ChessRenderer::Initialize() {
 
     this->camera = new Camera();
     this->board = new Board(ruleset);
+    this->gameState = new GameState();
     this->picker = new PickEngine(board, camera);
     board->Initialize();
 
@@ -47,7 +48,7 @@ void ChessRenderer::Initialize() {
     skyboxRenderer = new SkyboxRenderer();
     bottomModel = Loader::LoadModel("bottom.glm");
 
-    guiRenderer = new GuiRenderer();
+    guiRenderer = new GuiRenderer(gameState);
 }
 
 void ChessRenderer::RenderFrame() {
@@ -185,15 +186,22 @@ void ChessRenderer::OnClick() {
     glfwGetCursorPos(window, &mouseX, &mouseY);
 
     PickResult pickResult = picker->Pick((int) mouseX, (int) mouseY);
-    if (pickResult.type == PIECE)
+    if (pickResult.type == PIECE && pickResult.piece->team == gameState->currentTeam)
         selectedPiece = pickResult.piece;
     else if (pickResult.type == BOARD) {
         glm::vec2 vec = pickResult.boardPos;
         if (!board->CheckPosition(vec))
             selectedPiece = nullptr;
         else {
-            MoveResult result = board->Move(selectedPiece->position, pickResult.boardPos);
-            printf("Move result: %d\n", result.allowed);
+            if (selectedPiece == nullptr)
+                selectedPiece = board->GetPiece(vec);
+            else {
+                MoveResult result = board->Move(selectedPiece->position, pickResult.boardPos);
+                if (result.allowed) {
+                    selectedPiece = nullptr;
+                    gameState->SwitchTeam();
+                }
+            }
         }
 
     } else

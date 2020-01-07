@@ -26,6 +26,7 @@ private:
     glm::vec2 mousePos;
 
     Board *board;
+    GameState *gameState;
 
     Camera *camera;
     BoardShader *boardShader;

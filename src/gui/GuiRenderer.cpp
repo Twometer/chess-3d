@@ -7,12 +7,12 @@
 #include "../util/Loader.h"
 
 
-GuiRenderer::GuiRenderer() {
-    font = Loader::LoadFont("lucida");
-    fontRenderer = new FontRenderer(font);
+GuiRenderer::GuiRenderer(GameState *gameState) {
+    this->gameState = gameState;
     debug = new Debug();
+    font = Loader::LoadFont("nirmala");
+    fontRenderer = new FontRenderer(font);
 }
-
 
 void GuiRenderer::Render() {
     glDisable(GL_CULL_FACE);
@@ -20,6 +20,11 @@ void GuiRenderer::Render() {
 
     if (showDebug)
         debug->Render(fontRenderer);
+
+    if (gameState->currentTeam == Black)
+        fontRenderer->Render("Schwarz ist am Zug", 5, 5, 0.5);
+    else
+        fontRenderer->Render("Weiss ist am Zug", 5, 5, 0.5);
 
     glEnable(GL_DEPTH_TEST);
 }

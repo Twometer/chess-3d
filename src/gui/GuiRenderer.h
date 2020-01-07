@@ -5,10 +5,10 @@
 #ifndef CHESS_3D_GUIRENDERER_H
 #define CHESS_3D_GUIRENDERER_H
 
-
 #include "font/Font.h"
-#include "../render/shaders/FontShader.h"
 #include "font/FontRenderer.h"
+#include "../render/shaders/FontShader.h"
+#include "../model/GameState.h"
 #include "Debug.h"
 
 class GuiRenderer {
@@ -19,10 +19,12 @@ private:
 
     Debug *debug;
 
+    GameState *gameState;
+
 public:
     bool showDebug = false;
 
-    GuiRenderer();
+    GuiRenderer(GameState *gameState);
 
     void Render();
 
