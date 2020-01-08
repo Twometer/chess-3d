@@ -27,7 +27,7 @@ MoveResult Rule::TryMove(Piece *piece, glm::vec2 to) {
         else if (!hit.empty()) {
             bool success;
             glm::vec2 dist = other->position - piece->position;
-            glm::vec2 baseVec = FindBaseVector(piece, dist, hit, success);
+            glm::vec2 baseVec = FindBaseVector(piece, 1, dist, hit, success);
             if (success)
                 return MoveResult(other->type, other->team);
             else
@@ -41,7 +41,8 @@ MoveResult Rule::TryMove(Piece *piece, glm::vec2 to) {
     // The move does not match any base vectors defined
     // in the ruleset and is therefore invalid.
     bool foundVec = false;
-    glm::vec2 baseVec = FindBaseVector(piece, diff, moves, foundVec);
+    int range = CalculateRange(piece);;
+    glm::vec2 baseVec = FindBaseVector(piece, range, diff, moves, foundVec);
     if (!foundVec)
         return MoveResult(MoveResultType::Invalid);
 
@@ -88,15 +89,15 @@ Rule *Rule::Load(nlohmann::json &json) {
  * that means that the move is not allowed.
  *
  * @param piece    The piece in question
+ * @param range    The range of the piece
  * @param move     The move that is tried to be matched
  * @param vectors  This function can be applied to the movement as well as the hit check.
  *                 We therefore have to specify which vector of vectors (lol) to search.
  * @param success  Whether a move was matched
  * @return The base-vector, in absolute coordinates
  */
-glm::vec2 Rule::FindBaseVector(Piece *piece, glm::vec2 move, std::vector<glm::vec2> &vectors, bool &success) {
-    int range = CalculateRange(piece);
-
+glm::vec2
+Rule::FindBaseVector(Piece *piece, int range, glm::vec2 move, std::vector<glm::vec2> &vectors, bool &success) {
     glm::vec2 aligned = AlignDirection(piece->team, move); // Align to team-relative coordinates
 
     for (glm::vec2 &vec : vectors) {
