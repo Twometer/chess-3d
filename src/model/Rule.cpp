@@ -33,6 +33,9 @@ MoveResult Rule::TryMove(Piece *piece, glm::vec2 to) {
             else
                 return MoveResult(INVALID);
         }
+        // If no special hit vectors are defined
+        // and we are trying to move to an enemy, check normal
+        // move vectors
     }
 
     // The move does not match any base vectors defined
@@ -45,7 +48,6 @@ MoveResult Rule::TryMove(Piece *piece, glm::vec2 to) {
     // If the piece can't jump, ray trace so that it
     // can't walk through other pieces.
     if (!mayJump) {
-        float dist = glm::length(diff);
         glm::vec2 src = piece->position;
         while (src != to && Board::CheckPosition(src)) {
             src += baseVec;
@@ -53,10 +55,9 @@ MoveResult Rule::TryMove(Piece *piece, glm::vec2 to) {
             if (other != nullptr)
                 if (other->team == piece->team)
                     return MoveResult(INVALID);
-                else if (glm::length(to - src) <= dist)
+                else if (src == to)
                     return MoveResult(other->position);
-                else
-                    return MoveResult(INVALID);
+                else return MoveResult(INVALID);
         }
     }
 
