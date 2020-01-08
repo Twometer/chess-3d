@@ -6,6 +6,8 @@
 #define CHESS_3D_MOVERESULT_H
 
 #include <glm/vec2.hpp>
+#include "PieceType.h"
+#include "Team.h"
 
 enum MoveResultType {
     INVALID,
@@ -17,15 +19,17 @@ struct MoveResult {
 
     MoveResultType resultType;
 
-    glm::vec2 hitPosition;
+    PieceType pieceHit;
+    Team teamHit;
 
     explicit MoveResult(MoveResultType type) {
         this->resultType = type;
     }
 
-    MoveResult(glm::vec2 hitPosition) {
+    MoveResult(PieceType pieceType, Team team) {
         this->resultType = HIT;
-        this->hitPosition = hitPosition;
+        this->pieceHit = pieceType;
+        this->teamHit = team;
     }
 
 };

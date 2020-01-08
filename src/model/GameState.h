@@ -7,9 +7,15 @@
 
 #include "Team.h"
 
+enum RunState {
+    NOT_STARTED,
+    RUNNING,
+    ENDED
+};
+
 class GameState {
 public:
-    bool isRunning = false;
+    RunState runState = NOT_STARTED;
 
     double gameStart = -1;
     double gameStop = -1;

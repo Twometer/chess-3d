@@ -24,21 +24,32 @@ void GuiRenderer::Render() {
 
     glm::vec2 viewport = ChessRenderer::GetViewportSize();
 
-    if (gameState->currentTeam == Black)
-        fontRenderer->RenderCentered("Schwarz ist am Zug", viewport.x / 2, viewport.y - 100, 0.75);
-    else
-        fontRenderer->RenderCentered("Weiss ist am Zug", viewport.x / 2, viewport.y - 100, 0.75);
+    double elapsed;
+    switch (gameState->runState) {
+        case NOT_STARTED:
+            elapsed = 0;
+            break;
+        case RUNNING:
+            elapsed = glfwGetTime() - gameState->gameStart;
 
+            if (gameState->currentTeam == Black)
+                fontRenderer->RenderCentered("Schwarz ist am Zug", viewport.x / 2, viewport.y - 100, 0.75);
+            else
+                fontRenderer->RenderCentered("Weiss ist am Zug", viewport.x / 2, viewport.y - 100, 0.75);
+            break;
+        case ENDED:
+            elapsed = gameState->gameStop - gameState->gameStart;
 
-    if (gameState->gameStart > 0) {
-        double elapsed = glfwGetTime() - gameState->gameStart;
-        fontRenderer->RenderCentered(FormatTime(elapsed), viewport.x / 2, 5, 0.75);
-    } else if (gameState->gameStop > 0) {
-        double elapsed = gameState->gameStop - gameState->gameStart;
-        fontRenderer->RenderCentered(FormatTime(elapsed), viewport.x / 2, 5, 0.75);
-    } else {
-        fontRenderer->RenderCentered("00:00:00", viewport.x / 2, 5, 0.75);
+            fontRenderer->RenderCentered("Schachmatt!", viewport.x / 2, viewport.y / 2 - 150, 1);
+
+            if (gameState->currentTeam == Black)
+                fontRenderer->RenderCentered("Schwarz hat gewonnen", viewport.x / 2, viewport.y / 2, 1);
+            else
+                fontRenderer->RenderCentered("Weiss hat gewonnen", viewport.x / 2, viewport.y / 2, 1);
+            break;
     }
+
+    fontRenderer->RenderCentered(FormatTime(elapsed), viewport.x / 2, 5, 0.75);
 
     glEnable(GL_DEPTH_TEST);
 }

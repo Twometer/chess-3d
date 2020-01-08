@@ -77,13 +77,15 @@ void ChessRenderer::RenderFrame() {
     glDisable(GL_CULL_FACE);
     skyboxRenderer->Render(camera);
 
-    glEnable(GL_CULL_FACE);
-    shadelessShader->Bind();
-    shadelessShader->SetCameraMatrix(worldMat);
-    DrawCheck(Team::White);
-    DrawCheck(Team::Black);
-    DrawHints(worldMat);
-    DrawSelection(worldMat);
+    if (gameState->runState == RUNNING) {
+        glEnable(GL_CULL_FACE);
+        shadelessShader->Bind();
+        shadelessShader->SetCameraMatrix(worldMat);
+        DrawCheck(Team::White);
+        DrawCheck(Team::Black);
+        DrawHints(worldMat);
+        DrawSelection(worldMat);
+    }
 
     guiRenderer->Render();
 
@@ -92,7 +94,7 @@ void ChessRenderer::RenderFrame() {
 }
 
 void ChessRenderer::DrawHints(glm::mat4 mat) {
-    if (!gameState->isRunning || selectedPiece == nullptr)
+    if (selectedPiece == nullptr)
         return;
 
     for (int x = 0; x < 8; x++)
@@ -113,14 +115,9 @@ void ChessRenderer::DrawHints(glm::mat4 mat) {
 }
 
 void ChessRenderer::DrawCheck(Team team) {
-    if (!gameState->isRunning)
-        return;
-
     Piece *king = board->FindPiece(PieceType::King, team);
-    if (king == nullptr) {
-        gameState->StopGame();
+    if (king == nullptr) // If a king is missing, we are in endgame
         return;
-    }
 
     // Flash the king's hitbox when he's in check
     float ftime = static_cast<float>(glfwGetTime());
@@ -254,6 +251,9 @@ void ChessRenderer::OnViewportSizeChanged(glm::vec2 viewportSize) {
 }
 
 void ChessRenderer::OnClick() {
+    if (gameState->runState == ENDED)
+        return;
+
     double mouseX, mouseY;
     glfwGetCursorPos(window, &mouseX, &mouseY);
 
@@ -294,14 +294,27 @@ void ChessRenderer::SelectPiece(Piece *piece) {
     if (piece == nullptr || piece->team == gameState->currentTeam)
         selectedPiece = piece;
 
-    if (!gameState->isRunning)
+    if (gameState->runState == NOT_STARTED)
         gameState->StartGame();
 }
 
 void ChessRenderer::MovePiece(Piece *piece, glm::vec2 dst) {
     MoveResult result = board->Move(piece->position, dst);
-    if (result.resultType != INVALID) {
-        selectedPiece = nullptr;
-        gameState->SwitchTeam();
+
+    switch (result.resultType) {
+        case HIT:
+            if (result.pieceHit == King) {
+                selectedPiece = nullptr;
+                gameState->StopGame();
+                break;
+            }
+        case OK:
+            selectedPiece = nullptr;
+            gameState->SwitchTeam();
+            break;
+
+        case INVALID:
+            // Do nothing
+            break;
     }
 }

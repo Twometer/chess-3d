@@ -6,12 +6,12 @@
 #include "GameState.h"
 
 void GameState::StartGame() {
-    isRunning = true;
+    runState = RUNNING;
     gameStart = glfwGetTime();
 }
 
 void GameState::StopGame() {
-    isRunning = false;
+    runState = ENDED;
     gameStop = glfwGetTime();
 }
 

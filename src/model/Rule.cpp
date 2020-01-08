@@ -29,7 +29,7 @@ MoveResult Rule::TryMove(Piece *piece, glm::vec2 to) {
             glm::vec2 dist = other->position - piece->position;
             glm::vec2 baseVec = FindBaseVector(piece, dist, hit, success);
             if (success)
-                return MoveResult(other->position);
+                return MoveResult(other->type, other->team);
             else
                 return MoveResult(INVALID);
         }
@@ -56,7 +56,7 @@ MoveResult Rule::TryMove(Piece *piece, glm::vec2 to) {
                 if (other->team == piece->team)
                     return MoveResult(INVALID);
                 else if (src == to)
-                    return MoveResult(other->position);
+                    return MoveResult(other->type, other->team);
                 else return MoveResult(INVALID);
         }
     }
