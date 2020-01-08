@@ -6,15 +6,15 @@
 #include "GameState.h"
 
 void GameState::StartGame() {
-    runState = RUNNING;
+    runState = RunState::Running;
     gameStart = glfwGetTime();
 }
 
 void GameState::StopGame() {
-    runState = ENDED;
+    runState = RunState::Ended;
     gameStop = glfwGetTime();
 }
 
 void GameState::SwitchTeam() {
-    currentTeam = (currentTeam == White ? Black : White);
+    currentTeam = (currentTeam == Team::White ? Team::Black : Team::White);
 }

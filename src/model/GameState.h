@@ -7,15 +7,15 @@
 
 #include "Team.h"
 
-enum RunState {
-    NOT_STARTED,
-    RUNNING,
-    ENDED
+enum class RunState {
+    NotStarted,
+    Running,
+    Ended
 };
 
 class GameState {
 public:
-    RunState runState = NOT_STARTED;
+    RunState runState = RunState::NotStarted;
 
     double gameStart = -1;
     double gameStop = -1;

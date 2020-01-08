@@ -40,9 +40,9 @@ GLuint Fbo::GetDepthTexture() {
 void Fbo::Initialize(DepthBufferType depthBufferType) {
     CreateFramebuffer();
     CreateTextureAttachment();
-    if (depthBufferType == DEPTH_RBUF)
+    if (depthBufferType == DepthBufferType::DepthRbuf)
         CreateDepthBufferAttachment();
-    else if (depthBufferType == DEPTH_TEX)
+    else if (depthBufferType == DepthBufferType::DepthTex)
         CreateDepthTextureAttachment();
     Unbind();
 }

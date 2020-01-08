@@ -5,7 +5,7 @@
 #ifndef CHESS_3D_PIECETYPE_H
 #define CHESS_3D_PIECETYPE_H
 
-enum PieceType {
+enum class PieceType {
     Pawn,        // Bauer
     Rook,        // Turm
     Bishop,      // Läufer

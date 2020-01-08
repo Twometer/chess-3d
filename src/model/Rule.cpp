@@ -23,7 +23,7 @@ MoveResult Rule::TryMove(Piece *piece, glm::vec2 to) {
     Piece *other = board->GetPiece(to);
     if (other != nullptr) {
         if (piece->team == other->team)
-            return MoveResult(INVALID);
+            return MoveResult(MoveResultType::Invalid);
         else if (!hit.empty()) {
             bool success;
             glm::vec2 dist = other->position - piece->position;
@@ -31,7 +31,7 @@ MoveResult Rule::TryMove(Piece *piece, glm::vec2 to) {
             if (success)
                 return MoveResult(other->type, other->team);
             else
-                return MoveResult(INVALID);
+                return MoveResult(MoveResultType::Invalid);
         }
         // If no special hit vectors are defined
         // and we are trying to move to an enemy, check normal
@@ -43,7 +43,7 @@ MoveResult Rule::TryMove(Piece *piece, glm::vec2 to) {
     bool foundVec = false;
     glm::vec2 baseVec = FindBaseVector(piece, diff, moves, foundVec);
     if (!foundVec)
-        return MoveResult(INVALID);
+        return MoveResult(MoveResultType::Invalid);
 
     // If the piece can't jump, ray trace so that it
     // can't walk through other pieces.
@@ -54,14 +54,14 @@ MoveResult Rule::TryMove(Piece *piece, glm::vec2 to) {
             Piece *other = board->GetPiece(src);
             if (other != nullptr)
                 if (other->team == piece->team)
-                    return MoveResult(INVALID);
+                    return MoveResult(MoveResultType::Invalid);
                 else if (src == to)
                     return MoveResult(other->type, other->team);
-                else return MoveResult(INVALID);
+                else return MoveResult(MoveResultType::Invalid);
         }
     }
 
-    return MoveResult(OK);
+    return MoveResult(MoveResultType::OK);
 }
 
 Rule *Rule::Load(nlohmann::json &json) {
@@ -114,7 +114,7 @@ glm::vec2 Rule::FindBaseVector(Piece *piece, glm::vec2 move, std::vector<glm::ve
 int Rule::CalculateRange(Piece *piece) {
     glm::vec2 position = piece->position;
     if (piece->rule->infinite) return 8;
-    else if (piece->type == Pawn && (position.y == 1 || position.y == 6))
+    else if (piece->type == PieceType::Pawn && (position.y == 1 || position.y == 6))
         return 2;
     else return 1;
 }
@@ -122,7 +122,7 @@ int Rule::CalculateRange(Piece *piece) {
 glm::vec2 Rule::AlignDirection(Team team, glm::vec2 vec) {
     // Move direction in the definition is relative to the team's base
     // Therefore, we have to align our vector with that
-    if (team == White)
+    if (team == Team::White)
         vec.y *= -1;
     return vec;
 }

@@ -64,10 +64,10 @@ PickResult PickEngine::PickPosition(int mx, int my) {
         pos += ray;
         attempts++;
         if (attempts > 100)
-            return {MISS, glm::vec2(), nullptr};
+            return {PickResultType::Miss, glm::vec2(), nullptr};
     }
 
-    return {BOARD, glm::vec2(floor((pos.x + 1) / 2.0f), floor((pos.z + 1) / 2.0f)), nullptr};
+    return {PickResultType::Board, glm::vec2(floor((pos.x + 1) / 2.0f), floor((pos.z + 1) / 2.0f)), nullptr};
 }
 
 
@@ -78,13 +78,13 @@ PickResult PickEngine::Pick(int mx, int my) {
     // raytracing to determine position on the board
 
     if (piece != nullptr)
-        return {PIECE, glm::vec2(), piece};
+        return {PickResultType::Piece, glm::vec2(), piece};
     else return PickPosition(mx, my);
 }
 
 void PickEngine::Resize(int width, int height) {
     delete fbo;
-    fbo = new Fbo(width, height, DepthBufferType::DEPTH_RBUF);
+    fbo = new Fbo(width, height, DepthBufferType::DepthRbuf);
 }
 
 

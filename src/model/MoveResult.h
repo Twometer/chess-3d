@@ -9,10 +9,10 @@
 #include "PieceType.h"
 #include "Team.h"
 
-enum MoveResultType {
-    INVALID,
+enum class MoveResultType {
+    Invalid,
     OK,
-    HIT
+    Hit
 };
 
 struct MoveResult {
@@ -27,7 +27,7 @@ struct MoveResult {
     }
 
     MoveResult(PieceType pieceType, Team team) {
-        this->resultType = HIT;
+        this->resultType = MoveResultType::Hit;
         this->pieceHit = pieceType;
         this->teamHit = team;
     }

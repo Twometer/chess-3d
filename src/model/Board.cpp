@@ -30,11 +30,11 @@ void Board::Initialize() {
 
 MoveResult Board::Move(glm::vec2 from, glm::vec2 to) {
     if (!CheckPosition(from) || !CheckPosition(to))
-        return MoveResult(INVALID);
+        return MoveResult(MoveResultType::Invalid);
 
     Piece *piece = GetPiece(from);
     MoveResult result = piece->rule->TryMove(piece, to);
-    if (result.resultType != INVALID) {
+    if (result.resultType != MoveResultType::Invalid) {
         SetPiece(to, piece);
         SetPiece(from, nullptr);
     }
@@ -92,16 +92,15 @@ Piece *Board::FindPiece(PieceType type, Team team) {
 }
 
 bool Board::IsInCheck(Piece *king) {
-    for (int x = 0; x < SIZE; x++) {
+    for (int x = 0; x < SIZE; x++)
         for (int y = 0; y < SIZE; y++) {
             Piece *enemy = GetPiece(glm::vec2(x, y));
             if (enemy == nullptr)
                 continue;
 
-            if (enemy->team != king->team && enemy->rule->TryMove(enemy, king->position).resultType == HIT) {
+            if (enemy->team != king->team &&
+                enemy->rule->TryMove(enemy, king->position).resultType == MoveResultType::Hit)
                 return true;
-            }
         }
-    }
     return false;
 }

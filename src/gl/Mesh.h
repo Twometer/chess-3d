@@ -24,6 +24,7 @@ public:
     std::vector<GLfloat> &GetVertices() {
         return vertices;
     }
+
     void AddNormal(glm::vec3 normal);
 
     std::vector<GLfloat> &GetNormals() {

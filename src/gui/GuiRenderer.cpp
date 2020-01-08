@@ -26,26 +26,26 @@ void GuiRenderer::Render() {
 
     double elapsed;
     switch (gameState->runState) {
-        case NOT_STARTED:
+        case RunState::NotStarted:
             elapsed = 0;
             break;
-        case RUNNING:
+        case RunState::Running:
             elapsed = glfwGetTime() - gameState->gameStart;
 
-            if (gameState->currentTeam == Black)
+            if (gameState->currentTeam == Team::Black)
                 fontRenderer->RenderCentered("Schwarz ist am Zug", viewport.x / 2, viewport.y - 100, 0.75);
             else
                 fontRenderer->RenderCentered("Weiss ist am Zug", viewport.x / 2, viewport.y - 100, 0.75);
             break;
-        case ENDED:
+        case RunState::Ended:
             elapsed = gameState->gameStop - gameState->gameStart;
 
-            fontRenderer->RenderCentered("Schachmatt!", viewport.x / 2, viewport.y / 2 - 150, 1);
+            fontRenderer->RenderCentered("Schachmatt!", viewport.x / 2, viewport.y / 2 - 150, 1.f);
 
-            if (gameState->currentTeam == Black)
-                fontRenderer->RenderCentered("Schwarz hat gewonnen", viewport.x / 2, viewport.y / 2, 1);
+            if (gameState->currentTeam == Team::Black)
+                fontRenderer->RenderCentered("Schwarz hat gewonnen", viewport.x / 2, viewport.y / 2, 1.f);
             else
-                fontRenderer->RenderCentered("Weiss hat gewonnen", viewport.x / 2, viewport.y / 2, 1);
+                fontRenderer->RenderCentered("Weiss hat gewonnen", viewport.x / 2, viewport.y / 2, 1.f);
             break;
     }
 

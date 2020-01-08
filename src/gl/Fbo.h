@@ -7,10 +7,10 @@
 
 #include <glad/glad.h>
 
-enum DepthBufferType {
-    NONE,
-    DEPTH_TEX,
-    DEPTH_RBUF
+enum class DepthBufferType {
+    None,
+    DepthTex,
+    DepthRbuf
 };
 
 class Fbo {

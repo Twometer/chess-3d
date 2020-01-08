@@ -11,10 +11,10 @@
 #include "../model/Piece.h"
 #include "shaders/PickShader.h"
 
-enum PickResultType {
-    MISS,
-    BOARD,
-    PIECE
+enum class PickResultType {
+    Miss,
+    Board,
+    Piece
 };
 
 struct PickResult {

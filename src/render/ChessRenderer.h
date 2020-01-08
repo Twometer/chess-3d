@@ -52,7 +52,7 @@ private:
 
     void DrawSelection(glm::mat4 mat);
 
-    void DrawHints(glm::mat4 mat);
+    void DrawHints();
 
     void DrawCheck(Team team);
 

@@ -77,13 +77,13 @@ void ChessRenderer::RenderFrame() {
     glDisable(GL_CULL_FACE);
     skyboxRenderer->Render(camera);
 
-    if (gameState->runState == RUNNING) {
+    if (gameState->runState == RunState::Running) {
         glEnable(GL_CULL_FACE);
         shadelessShader->Bind();
         shadelessShader->SetCameraMatrix(worldMat);
         DrawCheck(Team::White);
         DrawCheck(Team::Black);
-        DrawHints(worldMat);
+        DrawHints();
         DrawSelection(worldMat);
     }
 
@@ -93,7 +93,7 @@ void ChessRenderer::RenderFrame() {
     HandleInput();
 }
 
-void ChessRenderer::DrawHints(glm::mat4 mat) {
+void ChessRenderer::DrawHints() {
     if (selectedPiece == nullptr)
         return;
 
@@ -102,11 +102,11 @@ void ChessRenderer::DrawHints(glm::mat4 mat) {
             MoveResultType type = selectedPiece->rule->TryMove(selectedPiece, glm::vec2(x, y)).resultType;
             shadelessShader->SetPosition(glm::vec2(x, y));
 
-            if (type == OK) {
+            if (type == MoveResultType::OK) {
                 shadelessShader->SetColor(glm::vec4(0, 0.62f, 1.0f, 1.0f));
                 shadelessShader->SetModelMatrix(glm::mat4(1.0f));
                 hintModel->Render();
-            } else if (type == HIT) {
+            } else if (type == MoveResultType::Hit) {
                 shadelessShader->SetColor(glm::vec4(1.0f, 0.38f, 0.0f, 0.5f));
                 shadelessShader->SetModelMatrix(glm::scale(glm::mat4(1.0f), glm::vec3(3.0f, 1.0f, 3.0f)));
                 hintModel->Render();
@@ -188,11 +188,11 @@ void ChessRenderer::DrawPiece(Piece *piece) {
     // Goal: White is reflective, black is glassy
 
     // Environment blending factor. 0 means full reflection, 1 means full refraction
-    float envFac = piece->team == White ? 0.0f : 0.95f;
+    float envFac = piece->team == Team::White ? 0.0f : 0.95f;
     boardShader->SetEnvironFac(envFac);
 
     // Diffuse blending factor. 0 means full diffuse, 1 means full environment
-    float difFac = piece->team == White ? 0.8f : 0.90f;
+    float difFac = piece->team == Team::White ? 0.8f : 0.90f;
     boardShader->SetDiffuseFac(difFac);
 
     boardShader->SetPosition(piece->position);
@@ -200,8 +200,8 @@ void ChessRenderer::DrawPiece(Piece *piece) {
 }
 
 glm::mat4 ChessRenderer::GetModelMatrix(Piece *piece) {
-    if (piece->type == Knight) {
-        float rot = glm::radians(piece->team == White ? -90.f : 90.f);
+    if (piece->type == PieceType::Knight || piece->type == PieceType::King) {
+        float rot = glm::radians(piece->team == Team::White ? -90.f : 90.f);
         return glm::rotate(glm::mat4(1.0f), rot, glm::vec3(0, 1, 0));
     }
     return glm::mat4(1.0); // Identity
@@ -241,17 +241,17 @@ void ChessRenderer::OnViewportSizeChanged(glm::vec2 viewportSize) {
     this->picker->Resize(viewportSize.x, viewportSize.y);
 
     delete this->fbo;
-    this->fbo = new Fbo(viewportSize.x, viewportSize.y, DepthBufferType::DEPTH_RBUF);
+    this->fbo = new Fbo(viewportSize.x, viewportSize.y, DepthBufferType::DepthRbuf);
 
     delete this->fbo2;
-    this->fbo2 = new Fbo(viewportSize.x, viewportSize.y, DepthBufferType::DEPTH_RBUF);
+    this->fbo2 = new Fbo(viewportSize.x, viewportSize.y, DepthBufferType::DepthRbuf);
 
     delete this->fbo3;
-    this->fbo3 = new Fbo(viewportSize.x, viewportSize.y, DepthBufferType::NONE);
+    this->fbo3 = new Fbo(viewportSize.x, viewportSize.y, DepthBufferType::None);
 }
 
 void ChessRenderer::OnClick() {
-    if (gameState->runState == ENDED)
+    if (gameState->runState == RunState::Ended)
         return;
 
     double mouseX, mouseY;
@@ -261,14 +261,14 @@ void ChessRenderer::OnClick() {
     glm::vec2 vec = pickResult.boardPos;
 
     switch (pickResult.type) {
-        case PIECE:
+        case PickResultType::Piece:
             if (selectedPiece != nullptr && pickResult.piece->team != selectedPiece->team)
                 MovePiece(selectedPiece, pickResult.piece->position);
             else
                 SelectPiece(pickResult.piece);
             break;
 
-        case BOARD:
+        case PickResultType::Board:
             if (!board->CheckPosition(vec)) {
                 selectedPiece = nullptr;
             } else {
@@ -279,7 +279,7 @@ void ChessRenderer::OnClick() {
             }
             break;
 
-        case MISS:
+        case PickResultType::Miss:
             selectedPiece = nullptr;
             break;
     }
@@ -294,7 +294,7 @@ void ChessRenderer::SelectPiece(Piece *piece) {
     if (piece == nullptr || piece->team == gameState->currentTeam)
         selectedPiece = piece;
 
-    if (gameState->runState == NOT_STARTED)
+    if (gameState->runState == RunState::NotStarted)
         gameState->StartGame();
 }
 
@@ -302,18 +302,18 @@ void ChessRenderer::MovePiece(Piece *piece, glm::vec2 dst) {
     MoveResult result = board->Move(piece->position, dst);
 
     switch (result.resultType) {
-        case HIT:
-            if (result.pieceHit == King) {
+        case MoveResultType::Hit:
+            if (result.pieceHit == PieceType::King) {
                 selectedPiece = nullptr;
                 gameState->StopGame();
                 break;
             }
-        case OK:
+        case MoveResultType::OK:
             selectedPiece = nullptr;
             gameState->SwitchTeam();
             break;
 
-        case INVALID:
+        case MoveResultType::Invalid:
             // Do nothing
             break;
     }
