@@ -7,15 +7,20 @@
 
 #include "Team.h"
 
-struct GameState {
+class GameState {
+public:
+    bool isRunning = false;
 
     double gameStart = -1;
+    double gameStop = -1;
 
     Team currentTeam = Team::White;
 
-    void SwitchTeam() {
-        currentTeam = (currentTeam == White ? Black : White);
-    }
+    void StartGame();
+
+    void StopGame();
+
+    void SwitchTeam();
 
 };
 

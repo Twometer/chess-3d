@@ -29,8 +29,12 @@ void GuiRenderer::Render() {
     else
         fontRenderer->RenderCentered("Weiss ist am Zug", viewport.x / 2, viewport.y - 100, 0.75);
 
+
     if (gameState->gameStart > 0) {
         double elapsed = glfwGetTime() - gameState->gameStart;
+        fontRenderer->RenderCentered(FormatTime(elapsed), viewport.x / 2, 5, 0.75);
+    } else if (gameState->gameStop > 0) {
+        double elapsed = gameState->gameStop - gameState->gameStart;
         fontRenderer->RenderCentered(FormatTime(elapsed), viewport.x / 2, 5, 0.75);
     } else {
         fontRenderer->RenderCentered("00:00:00", viewport.x / 2, 5, 0.75);

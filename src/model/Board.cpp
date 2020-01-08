@@ -34,7 +34,7 @@ MoveResult Board::Move(glm::vec2 from, glm::vec2 to) {
 
     Piece *piece = GetPiece(from);
     MoveResult result = piece->rule->TryMove(piece, to);
-    if (result.resultType == OK) {
+    if (result.resultType != INVALID) {
         SetPiece(to, piece);
         SetPiece(from, nullptr);
     }

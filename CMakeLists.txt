@@ -17,6 +17,7 @@ add_executable(chess_3d
         src/model/Piece.cpp
         src/model/Ruleset.cpp
         src/model/PieceRegistry.cpp
+        src/model/GameState.cpp
         src/util/Logger.cpp
         src/util/Loader.cpp
         src/util/GlmReader.cpp

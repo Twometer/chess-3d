@@ -58,6 +58,8 @@ private:
 
     void SelectPiece(Piece *piece);
 
+    void MovePiece(Piece *piece, glm::vec2 dst);
+
 public:
     explicit ChessRenderer(GLFWwindow *window);
 

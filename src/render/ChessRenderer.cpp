@@ -92,7 +92,7 @@ void ChessRenderer::RenderFrame() {
 }
 
 void ChessRenderer::DrawHints(glm::mat4 mat) {
-    if (selectedPiece == nullptr)
+    if (!gameState->isRunning || selectedPiece == nullptr)
         return;
 
     for (int x = 0; x < 8; x++)
@@ -113,7 +113,14 @@ void ChessRenderer::DrawHints(glm::mat4 mat) {
 }
 
 void ChessRenderer::DrawCheck(Team team) {
+    if (!gameState->isRunning)
+        return;
+
     Piece *king = board->FindPiece(PieceType::King, team);
+    if (king == nullptr) {
+        gameState->StopGame();
+        return;
+    }
 
     // Flash the king's hitbox when he's in check
     float ftime = static_cast<float>(glfwGetTime());
@@ -255,7 +262,10 @@ void ChessRenderer::OnClick() {
 
     switch (pickResult.type) {
         case PIECE:
-            SelectPiece(pickResult.piece);
+            if (selectedPiece != nullptr && pickResult.piece->team != selectedPiece->team)
+                MovePiece(selectedPiece, pickResult.piece->position);
+            else
+                SelectPiece(pickResult.piece);
             break;
 
         case BOARD:
@@ -264,13 +274,8 @@ void ChessRenderer::OnClick() {
             } else {
                 if (selectedPiece == nullptr)
                     SelectPiece(board->GetPiece(vec));
-                else {
-                    MoveResult result = board->Move(selectedPiece->position, pickResult.boardPos);
-                    if (result.resultType == OK) {
-                        selectedPiece = nullptr;
-                        gameState->SwitchTeam();
-                    }
-                }
+                else
+                    MovePiece(selectedPiece, vec);
             }
             break;
 
@@ -289,6 +294,14 @@ void ChessRenderer::SelectPiece(Piece *piece) {
     if (piece == nullptr || piece->team == gameState->currentTeam)
         selectedPiece = piece;
 
-    if (gameState->gameStart < 0)
-        gameState->gameStart = glfwGetTime();
+    if (!gameState->isRunning)
+        gameState->StartGame();
+}
+
+void ChessRenderer::MovePiece(Piece *piece, glm::vec2 dst) {
+    MoveResult result = board->Move(piece->position, dst);
+    if (result.resultType != INVALID) {
+        selectedPiece = nullptr;
+        gameState->SwitchTeam();
+    }
 }
