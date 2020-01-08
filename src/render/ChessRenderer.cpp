@@ -78,6 +78,11 @@ void ChessRenderer::RenderFrame() {
     skyboxRenderer->Render(camera);
 
     glEnable(GL_CULL_FACE);
+    shadelessShader->Bind();
+    shadelessShader->SetCameraMatrix(worldMat);
+    DrawCheck(Team::White);
+    DrawCheck(Team::Black);
+    DrawHints(worldMat);
     DrawSelection(worldMat);
 
     guiRenderer->Render();
@@ -86,14 +91,9 @@ void ChessRenderer::RenderFrame() {
     HandleInput();
 }
 
-void ChessRenderer::DrawSelection(glm::mat4 mat) {
+void ChessRenderer::DrawHints(glm::mat4 mat) {
     if (selectedPiece == nullptr)
         return;
-
-    // Draw hint
-    shadelessShader->Bind();
-    shadelessShader->SetCameraMatrix(mat);
-    shadelessShader->SetModelMatrix(glm::mat4(1.0f));
 
     for (int x = 0; x < 8; x++)
         for (int y = 0; y < 8; y++) {
@@ -110,6 +110,27 @@ void ChessRenderer::DrawSelection(glm::mat4 mat) {
                 hintModel->Render();
             }
         }
+}
+
+void ChessRenderer::DrawCheck(Team team) {
+    Piece *king = board->FindPiece(PieceType::King, team);
+
+    // Flash the king's hitbox when he's in check
+    float ftime = static_cast<float>(glfwGetTime());
+    float scale = (glm::sin(10.f * ftime) * 0.35f) + 3.25f;
+
+    if (board->IsInCheck(king)) {
+        shadelessShader->SetPosition(king->position);
+        shadelessShader->SetColor(glm::vec4(1.0f, 0.05f, 0.05f, 1.0f));
+        shadelessShader->SetModelMatrix(glm::scale(glm::mat4(1.0f), glm::vec3(scale, 1.0f, scale)));
+        hintModel->Render();
+    }
+}
+
+
+void ChessRenderer::DrawSelection(glm::mat4 mat) {
+    if (selectedPiece == nullptr)
+        return;
 
     // Draw selected model
     glm::vec2 position = selectedPiece->position;
@@ -158,6 +179,30 @@ void ChessRenderer::DrawSelection(glm::mat4 mat) {
     glEnable(GL_CULL_FACE);
 }
 
+
+void ChessRenderer::DrawPiece(Piece *piece) {
+    // Goal: White is reflective, black is glassy
+
+    // Environment blending factor. 0 means full reflection, 1 means full refraction
+    float envFac = piece->team == White ? 0.0f : 0.95f;
+    boardShader->SetEnvironFac(envFac);
+
+    // Diffuse blending factor. 0 means full diffuse, 1 means full environment
+    float difFac = piece->team == White ? 0.8f : 0.90f;
+    boardShader->SetDiffuseFac(difFac);
+
+    boardShader->SetPosition(piece->position);
+    PieceRegistry::GetModel(piece->type)->Render();
+}
+
+glm::mat4 ChessRenderer::GetModelMatrix(Piece *piece) {
+    if (piece->type == Knight) {
+        float rot = glm::radians(piece->team == White ? -90.f : 90.f);
+        return glm::rotate(glm::mat4(1.0f), rot, glm::vec3(0, 1, 0));
+    }
+    return glm::mat4(1.0); // Identity
+}
+
 void ChessRenderer::HandleInput() {
     bool focused = glfwGetWindowAttrib(window, GLFW_FOCUSED) == GLFW_TRUE;
     if (!focused) return;
@@ -185,10 +230,6 @@ void ChessRenderer::HandleInput() {
 void ChessRenderer::OnScroll(glm::vec2 scrollVector) {
     camera->zoom -= scrollVector.y;
     camera->zoom = glm::clamp(camera->zoom, 0.01f, 25.0f);
-}
-
-void ChessRenderer::OnWindowSizeChanged(glm::vec2 windowSize) {
-    this->windowSize = windowSize;
 }
 
 void ChessRenderer::OnViewportSizeChanged(glm::vec2 viewportSize) {
@@ -244,33 +285,6 @@ void ChessRenderer::OnKeyPressed(int key) {
         guiRenderer->showDebug = !guiRenderer->showDebug;
 }
 
-void ChessRenderer::DrawPiece(Piece *piece) {
-    // Goal: White is reflective, black is glassy
-
-    // Environment blending factor. 0 means full reflection, 1 means full refraction
-    float envFac = piece->team == White ? 0.0f : 0.95f;
-    boardShader->SetEnvironFac(envFac);
-
-    // Diffuse blending factor. 0 means full diffuse, 1 means full environment
-    float difFac = piece->team == White ? 0.8f : 0.90f;
-    boardShader->SetDiffuseFac(difFac);
-
-    boardShader->SetPosition(piece->position);
-    PieceRegistry::GetModel(piece->type)->Render();
-}
-
-glm::mat4 ChessRenderer::GetModelMatrix(Piece *piece) {
-    if (piece->type == Knight) {
-        float rot = glm::radians(piece->team == White ? -90.f : 90.f);
-        return glm::rotate(glm::mat4(1.0f), rot, glm::vec3(0, 1, 0));
-    }
-    return glm::mat4(1.0); // Identity
-}
-
-void ChessRenderer::OnMousePositionChanged(double posx, double posy) {
-    mousePos = glm::vec2(posx, posy);
-}
-
 void ChessRenderer::SelectPiece(Piece *piece) {
     if (piece == nullptr || piece->team == gameState->currentTeam)
         selectedPiece = piece;
@@ -278,6 +292,3 @@ void ChessRenderer::SelectPiece(Piece *piece) {
     if (gameState->gameStart < 0)
         gameState->gameStart = glfwGetTime();
 }
-
-
-

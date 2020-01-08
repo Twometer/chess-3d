@@ -13,13 +13,12 @@
 
 class Board {
 private:
-    static constexpr int BOARD_SIZE = 8;
+    static constexpr int SIZE = 8;
 
-    Piece **pieces = new Piece *[BOARD_SIZE * BOARD_SIZE];
+    Piece **pieces = new Piece *[SIZE * SIZE];
 
     Ruleset *ruleset;
 
-private:
     static inline int GetIndex(int x, int y);
 
     Piece *CreatePiece(PieceType type, Team team);
@@ -39,9 +38,13 @@ public:
 
     Piece *GetPiece(glm::vec2 vec);
 
+    Piece *FindPiece(PieceType type, Team team);
+
     void SetPiece(glm::vec2 vec, Piece *piece);
 
     void SetPiece(glm::vec2 vec, PieceType type, Team team);
+
+    bool IsInCheck(Piece *king);
 
     static bool CheckPosition(glm::vec2 position);
 };

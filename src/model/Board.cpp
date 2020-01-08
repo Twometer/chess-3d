@@ -6,7 +6,7 @@
 
 Board::Board(Ruleset *ruleset) {
     this->ruleset = ruleset;
-    memset(pieces, 0, BOARD_SIZE * BOARD_SIZE * sizeof(Piece *));
+    memset(pieces, 0, SIZE * SIZE * sizeof(Piece *));
 }
 
 Board::~Board() {
@@ -14,11 +14,11 @@ Board::~Board() {
 }
 
 int Board::GetIndex(int x, int y) {
-    return (y * BOARD_SIZE) + x;
+    return (y * SIZE) + x;
 }
 
 bool Board::CheckPosition(glm::vec2 position) {
-    return position.x >= 0 && position.y >= 0 && position.x < BOARD_SIZE && position.y < BOARD_SIZE;
+    return position.x >= 0 && position.y >= 0 && position.x < SIZE && position.y < SIZE;
 }
 
 void Board::Initialize() {
@@ -49,7 +49,7 @@ Piece *Board::CreatePiece(PieceType type, Team team) {
 
 Piece *Board::GetPiece(glm::vec2 vec) {
     int idx = GetIndex(vec.x, vec.y);
-    if (idx < 0 || idx >= BOARD_SIZE * BOARD_SIZE)
+    if (idx < 0 || idx >= SIZE * SIZE)
         return nullptr;
 
     return pieces[idx];
@@ -66,7 +66,7 @@ void Board::SetPiece(glm::vec2 vec, PieceType type, Team team) {
 }
 
 void Board::CreatePawns(int row, Team team) {
-    for (int i = 0; i < BOARD_SIZE; i++)
+    for (int i = 0; i < SIZE; i++)
         SetPiece(glm::vec2(i, row), PieceType::Pawn, team);
 }
 
@@ -79,4 +79,29 @@ void Board::CreateBaseline(int row, Team team) {
     SetPiece(glm::vec2(5, row), PieceType::Bishop, team);
     SetPiece(glm::vec2(6, row), PieceType::Knight, team);
     SetPiece(glm::vec2(7, row), PieceType::Rook, team);
+}
+
+Piece *Board::FindPiece(PieceType type, Team team) {
+    for (int x = 0; x < SIZE; x++)
+        for (int y = 0; y < SIZE; y++) {
+            Piece *piece = GetPiece(glm::vec2(x, y));
+            if (piece != nullptr && piece->type == type && piece->team == team)
+                return piece;
+        }
+    return nullptr;
+}
+
+bool Board::IsInCheck(Piece *king) {
+    for (int x = 0; x < SIZE; x++) {
+        for (int y = 0; y < SIZE; y++) {
+            Piece *enemy = GetPiece(glm::vec2(x, y));
+            if (enemy == nullptr)
+                continue;
+
+            if (enemy->team != king->team && enemy->rule->TryMove(enemy, king->position).resultType == HIT) {
+                return true;
+            }
+        }
+    }
+    return false;
 }

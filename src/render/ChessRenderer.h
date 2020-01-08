@@ -22,8 +22,6 @@ class ChessRenderer {
 private:
     GLFWwindow *window;
     static glm::vec2 viewportSize;
-    glm::vec2 windowSize;
-    glm::vec2 mousePos;
 
     static Board *board;
     GameState *gameState;
@@ -54,6 +52,10 @@ private:
 
     void DrawSelection(glm::mat4 mat);
 
+    void DrawHints(glm::mat4 mat);
+
+    void DrawCheck(Team team);
+
     void SelectPiece(Piece *piece);
 
 public:
@@ -65,13 +67,9 @@ public:
 
     void OnScroll(glm::vec2 scrollVector);
 
-    void OnWindowSizeChanged(glm::vec2 windowSize);
-
     void OnViewportSizeChanged(glm::vec2 viewportSize);
 
     void OnKeyPressed(int key);
-
-    void OnMousePositionChanged(double posx, double posy);
 
     void OnClick();
 
