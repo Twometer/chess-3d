@@ -41,6 +41,7 @@ void ChessRenderer::Initialize() {
     board->Initialize();
 
     boardShader = new BoardShader();
+    pieceShader = new PieceShader();
     copyShader = new CopyShader();
     shadelessShader = new ShadelessShader();
     hGaussShader = new HBlurShader();
@@ -48,6 +49,7 @@ void ChessRenderer::Initialize() {
 
     skyboxRenderer = new SkyboxRenderer();
     hintModel = Loader::LoadModel("hint.glm");
+    boardModel = Loader::LoadModel("board.glm");
 
     guiRenderer = new GuiRenderer(gameState);
 }
@@ -56,11 +58,15 @@ void ChessRenderer::RenderFrame() {
     glViewport(0, 0, viewportSize.x, viewportSize.y);
     glClearColor(0.8f, 0.8f, 0.8f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glm::mat4 worldMat = camera->CalculateMatrix(viewportSize);
+    glm::mat4 cameraMat = camera->CalculateMatrix(viewportSize);
 
     boardShader->Bind();
-    boardShader->SetCameraMatrix(worldMat);
-    boardShader->SetCameraPos(camera->GetEyePosition());
+    boardShader->SetCameraMatrix(cameraMat);
+    boardModel->Render();
+
+    pieceShader->Bind();
+    pieceShader->SetCameraMatrix(cameraMat);
+    pieceShader->SetCameraPos(camera->GetEyePosition());
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxRenderer->GetTexture());
@@ -71,7 +77,7 @@ void ChessRenderer::RenderFrame() {
             if (piece == nullptr || piece == selectedPiece)
                 continue;
 
-            boardShader->SetModelMatrix(GetModelMatrix(piece));
+            pieceShader->SetModelMatrix(GetModelMatrix(piece));
             DrawPiece(piece);
         }
     glDisable(GL_CULL_FACE);
@@ -80,11 +86,11 @@ void ChessRenderer::RenderFrame() {
     if (gameState->runState == RunState::Running) {
         glEnable(GL_CULL_FACE);
         shadelessShader->Bind();
-        shadelessShader->SetCameraMatrix(worldMat);
+        shadelessShader->SetCameraMatrix(cameraMat);
         DrawCheck(Team::White);
         DrawCheck(Team::Black);
         DrawHints();
-        DrawSelection(worldMat);
+        DrawSelection(cameraMat);
     }
 
     guiRenderer->Render();
@@ -154,9 +160,9 @@ void ChessRenderer::DrawSelection(glm::mat4 mat) {
     // Non-Outline Pass
     fbo2->Bind();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    boardShader->Bind();
-    boardShader->SetCameraMatrix(mat);
-    boardShader->SetModelMatrix(GetModelMatrix(selectedPiece));
+    pieceShader->Bind();
+    pieceShader->SetCameraMatrix(mat);
+    pieceShader->SetModelMatrix(GetModelMatrix(selectedPiece));
     DrawPiece(selectedPiece);
     fbo2->Unbind();
 
@@ -189,13 +195,13 @@ void ChessRenderer::DrawPiece(Piece *piece) {
 
     // Environment blending factor. 0 means full reflection, 1 means full refraction
     float envFac = piece->team == Team::White ? 0.0f : 0.95f;
-    boardShader->SetEnvironFac(envFac);
+    pieceShader->SetEnvironFac(envFac);
 
     // Diffuse blending factor. 0 means full diffuse, 1 means full environment
     float difFac = piece->team == Team::White ? 0.8f : 0.90f;
-    boardShader->SetDiffuseFac(difFac);
+    pieceShader->SetDiffuseFac(difFac);
 
-    boardShader->SetPosition(piece->position);
+    pieceShader->SetPosition(piece->position);
     PieceRegistry::GetModel(piece->type)->Render();
 }
 

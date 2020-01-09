@@ -10,6 +10,7 @@
 #include "PickEngine.h"
 #include "Camera.h"
 #include "shaders/BoardShader.h"
+#include "shaders/PieceShader.h"
 #include "shaders/CopyShader.h"
 #include "shaders/ShadelessShader.h"
 #include "shaders/HBlurShader.h"
@@ -28,6 +29,7 @@ private:
 
     Camera *camera;
     BoardShader *boardShader;
+    PieceShader *pieceShader;
     CopyShader *copyShader;
     ShadelessShader *shadelessShader;
     HBlurShader *hGaussShader;
@@ -41,6 +43,7 @@ private:
 
     SkyboxRenderer *skyboxRenderer;
     Model *hintModel;
+    Model *boardModel;
 
     GuiRenderer *guiRenderer;
 
