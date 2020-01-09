@@ -13,9 +13,9 @@ void main() {
     }
 
     if (mod(x + mod(y, 2), 2) == 0) {
-        color = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+        color = vec4(0.8f, 0.8f, 0.8f, 0.89f);
     } else {
-        color = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+        color = vec4(0.05f, 0.05f, 0.05f, 0.89f);
     }
 
 
