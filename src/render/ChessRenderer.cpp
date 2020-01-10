@@ -334,6 +334,8 @@ void ChessRenderer::MovePiece(Piece *piece, glm::vec2 dst) {
                 selectedPiece = nullptr;
                 gameState->StopGame();
                 break;
+            } else {
+                gameState->killedPieces.push_back(piece);
             }
         case MoveResultType::OK:
             selectedPiece = nullptr;
@@ -341,7 +343,12 @@ void ChessRenderer::MovePiece(Piece *piece, glm::vec2 dst) {
             break;
 
         case MoveResultType::Invalid:
-            // Do nothing
-            break;
+            // Do nothing and don't check any further
+            return;
+    }
+
+    // Check for promotion
+    if (piece->type == PieceType::Pawn && (piece->position.y == 0 || piece->position.y == 7)) {
+        board->SetPiece(piece->position, PieceType::Queen, piece->team);
     }
 }

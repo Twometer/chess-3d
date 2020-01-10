@@ -5,6 +5,9 @@
 #ifndef CHESS_3D_GAMESTATE_H
 #define CHESS_3D_GAMESTATE_H
 
+#include <vector>
+
+#include "Piece.h"
 #include "Team.h"
 
 enum class RunState {
@@ -21,6 +24,8 @@ public:
     double gameStop = -1;
 
     Team currentTeam = Team::White;
+
+    std::vector<Piece *> killedPieces;
 
     void StartGame();
 
