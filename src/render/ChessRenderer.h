@@ -63,6 +63,8 @@ private:
 
     void DrawCheck(Team team);
 
+    void DrawKilled(Team team);
+
     void SelectPiece(Piece *piece);
 
     void MovePiece(Piece *piece, glm::vec2 dst);

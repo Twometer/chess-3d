@@ -74,10 +74,13 @@ void ChessRenderer::RenderFrame() {
     pieceShader->SetEnvironFac(0.0f);
     pieceShader->SetDiffuseFac(0.35f);
     pieceShader->SetDiffuseColor(glm::vec3(0.45f, 0.45f, 0.45f));
-    boardBodyModel->Render();
-
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxRenderer->GetTexture());
+
+    boardBodyModel->Render();
+
+    DrawKilled(Team::Black);
+    DrawKilled(Team::White);
 
     for (int x = 0; x < 8; x++)
         for (int y = 0; y < 8; y++) {
@@ -220,6 +223,25 @@ void ChessRenderer::DrawPiece(Piece *piece) {
     PieceRegistry::GetModel(piece->type)->Render();
 }
 
+void ChessRenderer::DrawKilled(Team team) {
+    int x = team == Team::White ? 9 : -2;
+    int y = 0;
+
+    for (Piece *piece : gameState->killedPieces) {
+        if (piece->team == team) {
+            piece->position = glm::vec2(x, y);
+            DrawPiece(piece);
+
+            y++;
+            if (y > 7) {
+                y = 0;
+                if (x < 0) x--;
+                else x++;
+            }
+        }
+    }
+}
+
 glm::mat4 ChessRenderer::GetModelMatrix(Piece *piece) {
     if (piece->type == PieceType::Knight || piece->type == PieceType::King) {
         float rot = glm::radians(piece->team == Team::White ? -90.f : 90.f);
@@ -335,7 +357,7 @@ void ChessRenderer::MovePiece(Piece *piece, glm::vec2 dst) {
                 gameState->StopGame();
                 break;
             } else {
-                gameState->killedPieces.push_back(piece);
+                gameState->killedPieces.push_back(new Piece(nullptr, result.pieceHit, result.teamHit));
             }
         case MoveResultType::OK:
             selectedPiece = nullptr;
