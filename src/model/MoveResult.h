@@ -12,7 +12,7 @@
 enum class MoveResultType {
     Invalid,
     OK,
-    Hit
+    Capture
 };
 
 struct MoveResult {
@@ -27,7 +27,7 @@ struct MoveResult {
     }
 
     MoveResult(PieceType pieceType, Team team) {
-        this->resultType = MoveResultType::Hit;
+        this->resultType = MoveResultType::Capture;
         this->pieceHit = pieceType;
         this->teamHit = team;
     }

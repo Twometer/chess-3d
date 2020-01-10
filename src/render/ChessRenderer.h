@@ -63,7 +63,7 @@ private:
 
     void DrawCheck(Team team);
 
-    void DrawKilled(Team team);
+    void DrawCaptured(Team team);
 
     void SelectPiece(Piece *piece);
 

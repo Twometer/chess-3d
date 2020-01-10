@@ -25,7 +25,7 @@ public:
 
     Team currentTeam = Team::White;
 
-    std::vector<Piece *> killedPieces;
+    std::vector<Piece *> capturedPieces;
 
     void StartGame();
 

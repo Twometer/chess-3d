@@ -79,8 +79,8 @@ void ChessRenderer::RenderFrame() {
 
     boardBodyModel->Render();
 
-    DrawKilled(Team::Black);
-    DrawKilled(Team::White);
+    DrawCaptured(Team::Black);
+    DrawCaptured(Team::White);
 
     for (int x = 0; x < 8; x++)
         for (int y = 0; y < 8; y++) {
@@ -127,7 +127,7 @@ void ChessRenderer::DrawHints() {
                 shadelessShader->SetColor(glm::vec4(0, 0.62f, 1.0f, 1.0f));
                 shadelessShader->SetModelMatrix(glm::mat4(1.0f));
                 hintModel->Render();
-            } else if (type == MoveResultType::Hit) {
+            } else if (type == MoveResultType::Capture) {
                 shadelessShader->SetColor(glm::vec4(1.0f, 0.38f, 0.0f, 0.5f));
                 shadelessShader->SetModelMatrix(glm::scale(glm::mat4(1.0f), glm::vec3(3.0f, 1.0f, 3.0f)));
                 hintModel->Render();
@@ -223,11 +223,11 @@ void ChessRenderer::DrawPiece(Piece *piece) {
     PieceRegistry::GetModel(piece->type)->Render();
 }
 
-void ChessRenderer::DrawKilled(Team team) {
+void ChessRenderer::DrawCaptured(Team team) {
     int x = team == Team::White ? 9 : -2;
     int y = 0;
 
-    for (Piece *piece : gameState->killedPieces) {
+    for (Piece *piece : gameState->capturedPieces) {
         if (piece->team == team) {
             piece->position = glm::vec2(x, y);
             DrawPiece(piece);
@@ -351,13 +351,13 @@ void ChessRenderer::MovePiece(Piece *piece, glm::vec2 dst) {
     MoveResult result = board->Move(piece->position, dst);
 
     switch (result.resultType) {
-        case MoveResultType::Hit:
+        case MoveResultType::Capture:
             if (result.pieceHit == PieceType::King) {
                 selectedPiece = nullptr;
                 gameState->StopGame();
                 break;
             } else {
-                gameState->killedPieces.push_back(new Piece(nullptr, result.pieceHit, result.teamHit));
+                gameState->capturedPieces.push_back(new Piece(nullptr, result.pieceHit, result.teamHit));
             }
         case MoveResultType::OK:
             selectedPiece = nullptr;

@@ -99,7 +99,7 @@ bool Board::IsInCheck(Piece *king) {
                 continue;
 
             if (enemy->team != king->team &&
-                enemy->rule->TryMove(enemy, king->position).resultType == MoveResultType::Hit)
+                enemy->rule->TryMove(enemy, king->position).resultType == MoveResultType::Capture)
                 return true;
         }
     return false;
