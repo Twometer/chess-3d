@@ -72,6 +72,7 @@ void ChessRenderer::RenderFrame() {
     pieceShader->SetPosition(glm::vec2());
     pieceShader->SetEnvironFac(1.0f);
     pieceShader->SetDiffuseFac(0.8f);
+    pieceShader->SetDiffuseColor(glm::vec3(0.75f, 0.75f, 0.75f));
     boardBodyModel->Render();
 
     glActiveTexture(GL_TEXTURE0);
@@ -199,12 +200,15 @@ void ChessRenderer::DrawSelection(glm::mat4 mat) {
 void ChessRenderer::DrawPiece(Piece *piece) {
     // Goal: White is reflective, black is glassy
 
+    pieceShader->SetDiffuseColor(
+            piece->team == Team::White ? glm::vec3(1.0f, 1.0f, 1.0f) : glm::vec3(0.15f, 0.15f, 0.15f));
+
     // Environment blending factor. 0 means full reflection, 1 means full refraction
     float envFac = piece->team == Team::White ? 0.0f : 0.95f;
     pieceShader->SetEnvironFac(envFac);
 
     // Diffuse blending factor. 0 means full diffuse, 1 means full environment
-    float difFac = piece->team == Team::White ? 0.8f : 0.90f;
+    float difFac = piece->team == Team::White ? 0.75f : 0.92f;
     pieceShader->SetDiffuseFac(difFac);
 
     pieceShader->SetPosition(piece->position);

@@ -4,7 +4,7 @@
 
 #include "Rule.h"
 #include "../render/ChessRenderer.h"
-#include <iostream>
+#include "../util/Logger.h"
 
 void Rule::ReadVecList(nlohmann::json &json, std::vector<glm::vec2> &vec) {
     for (std::string item : json) {
@@ -115,6 +115,11 @@ Rule::FindBaseVector(Piece *piece, int range, glm::vec2 move, std::vector<glm::v
     return {};
 }
 
+/**
+ * Finds the movement range of the piece
+ * @param piece The piece
+ * @return      The movement range
+ */
 int Rule::CalculateRange(Piece *piece) {
     glm::vec2 position = piece->position;
     if (piece->rule->infinite) return 8;
@@ -123,6 +128,14 @@ int Rule::CalculateRange(Piece *piece) {
     else return 1;
 }
 
+/**
+ * Aligns or unaligns the vector with the team base. If the vector is
+ * aligned, it will be unaligned to global coordinates, if it's unaligned
+ * it will be a aligned to team base relative coordinates.
+ * @param team  The team
+ * @param vec   The vector
+ * @return      The (un)aligned vector
+ */
 glm::vec2 Rule::AlignDirection(Team team, glm::vec2 vec) {
     // Move direction in the definition is relative to the team's base
     // Therefore, we have to align our vector with that

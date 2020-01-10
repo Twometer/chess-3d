@@ -16,6 +16,7 @@ private:
     GLuint loc_cameraPos;
     GLuint loc_environFac;
     GLuint loc_diffuseFac;
+    GLuint loc_diffuseColor;
 
 public:
     PieceShader() {
@@ -29,6 +30,11 @@ public:
         loc_cameraPos = glGetUniformLocation(id, "cameraPos");
         loc_environFac = glGetUniformLocation(id, "environFac");
         loc_diffuseFac = glGetUniformLocation(id, "diffuseFac");
+        loc_diffuseColor = glGetUniformLocation(id, "diffuseColor");
+    }
+
+    void SetDiffuseColor(glm::vec3 diffuseColor) {
+        LoadVec3(loc_diffuseColor, diffuseColor);
     }
 
     void SetEnvironFac(float envMix) {
