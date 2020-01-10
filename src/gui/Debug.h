@@ -14,6 +14,8 @@ private:
     float frames;
     float lastFrame;
     double lastCheck;
+    double ftime;
+    double avg_ftime;
 
 public:
 
@@ -22,14 +24,17 @@ public:
         fontRenderer->Render(std::to_string((int) fps) + " fps", 0, 25, 0.4f);
 
         double now = glfwGetTime();
-        fontRenderer->Render(std::to_string((now - lastFrame) * 1000) + " ms", 0, 50, 0.4f);
+        ftime += (now - lastFrame) * 1000;
+        fontRenderer->Render(std::to_string(avg_ftime) + " ms", 0, 50, 0.4f);
 
         frames++;
 
         if (now - lastCheck >= 1) {
             lastCheck = glfwGetTime();
             fps = frames;
+            avg_ftime = ftime / frames;
             frames = 0;
+            ftime = 0;
         }
         lastFrame = glfwGetTime();
     }
