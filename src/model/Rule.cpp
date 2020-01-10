@@ -53,15 +53,18 @@ MoveResult Rule::TryMove(Piece *piece, glm::vec2 to) {
         while (src != to && Board::CheckPosition(src)) {
             src += baseVec;
             Piece *other = board->GetPiece(src);
-            if (other != nullptr)
+            if (other != nullptr) {
                 if (other->team == piece->team)
                     return MoveResult(MoveResultType::Invalid);
                 else if (src == to)
                     return MoveResult(other->type, other->team);
                 else return MoveResult(MoveResultType::Invalid);
+            }
         }
     }
 
+    if (other != nullptr)
+        return MoveResult(other->type, other->team);
     return MoveResult(MoveResultType::OK);
 }
 
