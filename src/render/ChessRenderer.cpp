@@ -38,6 +38,7 @@ void ChessRenderer::Initialize() {
     this->board = new Board(ruleset);
     this->gameState = new GameState();
     this->picker = new PickEngine(board, camera);
+    this->timer = new Timer(60);
     board->Initialize();
 
     boardShader = new BoardShader();
@@ -103,7 +104,11 @@ void ChessRenderer::RenderFrame() {
     guiRenderer->Render();
 
     glEnable(GL_CULL_FACE);
-    HandleInput();
+
+    if (timer->HasReached()) {
+        OnTick();
+        timer->Reset();
+    }
 }
 
 void ChessRenderer::DrawHints() {
@@ -223,6 +228,11 @@ glm::mat4 ChessRenderer::GetModelMatrix(Piece *piece) {
     return glm::mat4(1.0); // Identity
 }
 
+void ChessRenderer::OnTick() {
+    HandleInput();
+    camera->zoom.Update();
+}
+
 void ChessRenderer::HandleInput() {
     bool focused = glfwGetWindowAttrib(window, GLFW_FOCUSED) == GLFW_TRUE;
     if (!focused) return;
@@ -249,7 +259,7 @@ void ChessRenderer::HandleInput() {
 
 void ChessRenderer::OnScroll(glm::vec2 scrollVector) {
     camera->zoom -= scrollVector.y;
-    camera->zoom = glm::clamp(camera->zoom, 1.f, 25.0f);
+    camera->zoom.ClampTo(1.f, 25.0f);
 }
 
 void ChessRenderer::OnViewportSizeChanged(glm::vec2 viewportSize) {
@@ -305,6 +315,7 @@ void ChessRenderer::OnKeyPressed(int key) {
     if (key == GLFW_KEY_F3)
         guiRenderer->showDebug = !guiRenderer->showDebug;
 }
+
 
 void ChessRenderer::SelectPiece(Piece *piece) {
     if (piece == nullptr || piece->team == gameState->currentTeam)

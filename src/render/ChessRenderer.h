@@ -9,6 +9,7 @@
 #include "../gl/Model.h"
 #include "PickEngine.h"
 #include "Camera.h"
+#include "../anim/Timer.h"
 #include "shaders/BoardShader.h"
 #include "shaders/PieceShader.h"
 #include "shaders/CopyShader.h"
@@ -26,8 +27,14 @@ private:
 
     static Board *board;
     GameState *gameState;
+    Piece *selectedPiece = nullptr;
 
     Camera *camera;
+    SkyboxRenderer *skyboxRenderer;
+    GuiRenderer *guiRenderer;
+    PickEngine *picker;
+    Timer *timer;
+
     BoardShader *boardShader;
     PieceShader *pieceShader;
     CopyShader *copyShader;
@@ -35,18 +42,14 @@ private:
     HBlurShader *hGaussShader;
     VBlurShader *vGaussShader;
 
-    PickEngine *picker;
-    Piece *selectedPiece = nullptr;
     Fbo *fbo = nullptr;
     Fbo *fbo2 = nullptr;
     Fbo *fbo3 = nullptr;
 
-    SkyboxRenderer *skyboxRenderer;
     Model *hintModel;
     Model *boardModel;
     Model *boardBodyModel;
 
-    GuiRenderer *guiRenderer;
 
     void HandleInput();
 
@@ -78,6 +81,8 @@ public:
     void OnKeyPressed(int key);
 
     void OnClick();
+
+    void OnTick();
 
     static inline glm::vec2 GetViewportSize() {
         return viewportSize;

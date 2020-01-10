@@ -7,6 +7,8 @@
 
 #include <glm/glm.hpp>
 
+#include "../anim/Animated.h"
+
 class Camera {
 private:
     glm::mat4 matrix;
@@ -17,7 +19,7 @@ private:
     glm::vec3 eyePosition;
 
 public:
-    float zoom = 15.0f;
+    Animated zoom = 15.0f;
 
     glm::vec3 position;
 
