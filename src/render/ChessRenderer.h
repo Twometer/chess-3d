@@ -44,6 +44,7 @@ private:
     SkyboxRenderer *skyboxRenderer;
     Model *hintModel;
     Model *boardModel;
+    Model *boardBodyModel;
 
     GuiRenderer *guiRenderer;
 

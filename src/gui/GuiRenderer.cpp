@@ -27,6 +27,7 @@ void GuiRenderer::Render() {
     double elapsed;
     switch (gameState->runState) {
         case RunState::NotStarted:
+            fontRenderer->RenderCentered("Weiss beginnt das Spiel", viewport.x / 2, viewport.y - 100, 0.75);
             elapsed = 0;
             break;
         case RunState::Running:

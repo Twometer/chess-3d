@@ -50,6 +50,7 @@ void ChessRenderer::Initialize() {
     skyboxRenderer = new SkyboxRenderer();
     hintModel = Loader::LoadModel("hint.glm");
     boardModel = Loader::LoadModel("board.glm");
+    boardBodyModel = Loader::LoadModel("board.body.glm");
 
     guiRenderer = new GuiRenderer(gameState);
 }
@@ -67,6 +68,11 @@ void ChessRenderer::RenderFrame() {
     pieceShader->Bind();
     pieceShader->SetCameraMatrix(cameraMat);
     pieceShader->SetCameraPos(camera->GetEyePosition());
+    pieceShader->SetModelMatrix(glm::mat4(1.0f));
+    pieceShader->SetPosition(glm::vec2());
+    pieceShader->SetEnvironFac(1.0f);
+    pieceShader->SetDiffuseFac(0.8f);
+    boardBodyModel->Render();
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxRenderer->GetTexture());
@@ -227,7 +233,7 @@ void ChessRenderer::HandleInput() {
         camera->rotation.x -= 0.2 * (mouseX - mouseXLast);
         camera->rotation.y += 0.2 * (mouseY - mouseYLast);
 
-        camera->rotation.y = glm::clamp(camera->rotation.y, -180.f, -90.f);
+        camera->rotation.y = glm::clamp(camera->rotation.y, -170.f, -90.f);
     }
 
     mouseXLast = mouseX;
@@ -239,7 +245,7 @@ void ChessRenderer::HandleInput() {
 
 void ChessRenderer::OnScroll(glm::vec2 scrollVector) {
     camera->zoom -= scrollVector.y;
-    camera->zoom = glm::clamp(camera->zoom, 0.01f, 25.0f);
+    camera->zoom = glm::clamp(camera->zoom, 1.f, 25.0f);
 }
 
 void ChessRenderer::OnViewportSizeChanged(glm::vec2 viewportSize) {
@@ -300,7 +306,7 @@ void ChessRenderer::SelectPiece(Piece *piece) {
     if (piece == nullptr || piece->team == gameState->currentTeam)
         selectedPiece = piece;
 
-    if (gameState->runState == RunState::NotStarted)
+    if (selectedPiece != nullptr && gameState->runState == RunState::NotStarted)
         gameState->StartGame();
 }
 
