@@ -27,30 +27,30 @@ void GuiRenderer::Render() {
     double elapsed;
     switch (gameState->runState) {
         case RunState::NotStarted:
-            fontRenderer->RenderCentered("Weiss beginnt das Spiel", viewport.x / 2, viewport.y - 100, 0.75);
+            fontRenderer->RenderCenteredShadow("Weiss beginnt das Spiel", viewport.x / 2, viewport.y - 100, 0.75);
             elapsed = 0;
             break;
         case RunState::Running:
             elapsed = glfwGetTime() - gameState->gameStart;
 
             if (gameState->currentTeam == Team::Black)
-                fontRenderer->RenderCentered("Schwarz ist am Zug", viewport.x / 2, viewport.y - 100, 0.75);
+                fontRenderer->RenderCenteredShadow("Schwarz ist am Zug", viewport.x / 2, viewport.y - 100, 0.75);
             else
-                fontRenderer->RenderCentered("Weiss ist am Zug", viewport.x / 2, viewport.y - 100, 0.75);
+                fontRenderer->RenderCenteredShadow("Weiss ist am Zug", viewport.x / 2, viewport.y - 100, 0.75);
             break;
         case RunState::Ended:
             elapsed = gameState->gameStop - gameState->gameStart;
 
-            fontRenderer->RenderCentered("Schachmatt!", viewport.x / 2, viewport.y / 2 - 150, 1.f);
+            fontRenderer->RenderCenteredShadow("Schachmatt!", viewport.x / 2, viewport.y / 2 - 150, 1.f);
 
             if (gameState->currentTeam == Team::Black)
-                fontRenderer->RenderCentered("Schwarz hat gewonnen", viewport.x / 2, viewport.y / 2, 1.f);
+                fontRenderer->RenderCenteredShadow("Schwarz hat gewonnen", viewport.x / 2, viewport.y / 2, 1.f);
             else
-                fontRenderer->RenderCentered("Weiss hat gewonnen", viewport.x / 2, viewport.y / 2, 1.f);
+                fontRenderer->RenderCenteredShadow("Weiss hat gewonnen", viewport.x / 2, viewport.y / 2, 1.f);
             break;
     }
 
-    fontRenderer->RenderCentered(FormatTime(elapsed), viewport.x / 2, 5, 0.75);
+    fontRenderer->RenderCenteredShadow(FormatTime(elapsed), viewport.x / 2, 5, 0.75);
 
     glEnable(GL_DEPTH_TEST);
 }

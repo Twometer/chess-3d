@@ -14,7 +14,7 @@ FontRenderer::FontRenderer(Font *font) {
     glGenBuffers(1, &vbo);
 }
 
-void FontRenderer::Render(const std::string &value, int x, int y, float fontSize, glm::vec4 color) {
+void FontRenderer::Render(const std::string &value, float x, float y, float fontSize, glm::vec4 color) {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -69,20 +69,25 @@ void FontRenderer::Render(const std::string &value, int x, int y, float fontSize
     glBindVertexArray(0);
 }
 
-void FontRenderer::RenderCentered(const std::string &value, int x, int y, float fontSize, glm::vec4 color) {
+void FontRenderer::RenderCentered(const std::string &value, float x, float y, float fontSize, glm::vec4 color) {
     x -= GetFontWidth(value, fontSize) / 2;
     Render(value, x, y, fontSize, color);
 }
 
 int FontRenderer::GetFontWidth(const std::string &value, float fontSize) {
-    int x = 0;
+    float x = 0;
     for (char c : value) {
         Glyph *glyph = font->glyphs[static_cast<int>(c)];
         if (glyph == nullptr)
             continue;
         x += (glyph->advance - 15.0f) * fontSize;
     }
-    return x;
+    return (int) x;
+}
+
+void FontRenderer::RenderCenteredShadow(const std::string &value, float x, float y, float fontSize, glm::vec4 color) {
+    RenderCentered(value, x + 1.5f, y + 1.75f, fontSize, BLACK);
+    RenderCentered(value, x, y, fontSize, color);
 }
 
 

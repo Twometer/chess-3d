@@ -6,6 +6,7 @@
 #define CHESS_3D_FONTRENDERER_H
 
 #define WHITE glm::vec4(1.0f, 1.0f, 1.0f, 1.0f)
+#define BLACK glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)
 
 #include "Font.h"
 #include "../../render/shaders/FontShader.h"
@@ -26,9 +27,12 @@ public:
 
     int GetFontWidth(const std::string &value, float fontSize);
 
-    void RenderCentered(const std::string &value, int x, int y, float fontSize = 1.0f, glm::vec4 color = WHITE);
+    void RenderCentered(const std::string &value, float x, float y, float fontSize = 1.0f, glm::vec4 color = WHITE);
 
-    void Render(const std::string &value, int x, int y, float fontSize = 1.0f, glm::vec4 color = WHITE);
+    void
+    RenderCenteredShadow(const std::string &value, float x, float y, float fontSize = 1.0f, glm::vec4 color = WHITE);
+
+    void Render(const std::string &value, float x, float y, float fontSize = 1.0f, glm::vec4 color = WHITE);
 
 };
 
