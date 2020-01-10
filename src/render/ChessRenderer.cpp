@@ -71,9 +71,9 @@ void ChessRenderer::RenderFrame() {
     pieceShader->SetCameraPos(camera->GetEyePosition());
     pieceShader->SetModelMatrix(glm::mat4(1.0f));
     pieceShader->SetPosition(glm::vec2());
-    pieceShader->SetEnvironFac(1.0f);
-    pieceShader->SetDiffuseFac(0.8f);
-    pieceShader->SetDiffuseColor(glm::vec3(0.75f, 0.75f, 0.75f));
+    pieceShader->SetEnvironFac(0.0f);
+    pieceShader->SetDiffuseFac(0.35f);
+    pieceShader->SetDiffuseColor(glm::vec3(0.45f, 0.45f, 0.45f));
     boardBodyModel->Render();
 
     glActiveTexture(GL_TEXTURE0);
