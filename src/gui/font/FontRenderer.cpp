@@ -15,6 +15,7 @@ FontRenderer::FontRenderer(Font *font) {
 }
 
 void FontRenderer::Render(const std::string &value, float x, float y, float fontSize, glm::vec4 color) {
+    fontSize *= ChessRenderer::GetScale();
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -75,6 +76,7 @@ void FontRenderer::RenderCentered(const std::string &value, float x, float y, fl
 }
 
 int FontRenderer::GetFontWidth(const std::string &value, float fontSize) {
+    fontSize *= ChessRenderer::GetScale();
     float x = 0;
     for (char c : value) {
         Glyph *glyph = font->glyphs[static_cast<int>(c)];

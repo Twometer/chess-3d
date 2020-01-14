@@ -12,6 +12,7 @@
 
 glm::vec2 ChessRenderer::viewportSize;
 Board *ChessRenderer::board;
+float ChessRenderer::scale;
 
 ChessRenderer::ChessRenderer(GLFWwindow *window) {
     this->window = window;

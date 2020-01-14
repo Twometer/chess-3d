@@ -24,6 +24,7 @@ class ChessRenderer {
 private:
     GLFWwindow *window;
     static glm::vec2 viewportSize;
+    static float scale;
 
     static Board *board;
     GameState *gameState;
@@ -85,6 +86,14 @@ public:
     void OnClick();
 
     void OnTick();
+
+    static float GetScale() {
+        return scale;
+    }
+
+    static void SetScale(float scale) {
+        ChessRenderer::scale = scale;
+    }
 
     static inline glm::vec2 GetViewportSize() {
         return viewportSize;

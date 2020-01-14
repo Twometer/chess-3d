@@ -27,16 +27,16 @@ void GuiRenderer::Render() {
     double elapsed;
     switch (gameState->runState) {
         case RunState::NotStarted:
-            fontRenderer->RenderCenteredShadow("Weiss beginnt das Spiel", viewport.x / 2, viewport.y - 100, 0.75);
+            fontRenderer->RenderCenteredShadow("Weiss beginnt das Spiel", viewport.x / 2, viewport.y - 150, 0.75);
             elapsed = 0;
             break;
         case RunState::Running:
             elapsed = glfwGetTime() - gameState->gameStart;
 
             if (gameState->currentTeam == Team::Black)
-                fontRenderer->RenderCenteredShadow("Schwarz ist am Zug", viewport.x / 2, viewport.y - 100, 0.75);
+                fontRenderer->RenderCenteredShadow("Schwarz ist am Zug", viewport.x / 2, viewport.y - 150, 0.75);
             else
-                fontRenderer->RenderCenteredShadow("Weiss ist am Zug", viewport.x / 2, viewport.y - 100, 0.75);
+                fontRenderer->RenderCenteredShadow("Weiss ist am Zug", viewport.x / 2, viewport.y - 150, 0.75);
             break;
         case RunState::Ended:
             elapsed = gameState->gameStop - gameState->gameStart;

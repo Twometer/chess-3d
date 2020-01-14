@@ -61,6 +61,11 @@ int main() {
 
     int viewportWidth, viewportHeight;
     glfwGetFramebufferSize(window, &viewportWidth, &viewportHeight);
+
+    float scaleX, scaleY;
+    glfwGetWindowContentScale(window, &scaleX, &scaleY);
+
+    ChessRenderer::SetScale(scaleX);
     renderer->OnViewportSizeChanged(glm::vec2(viewportWidth, viewportHeight));
 
     glfwSetScrollCallback(window, scroll_callback);
