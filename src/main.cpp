@@ -56,6 +56,7 @@ int main() {
         return 1;
     }
 
+    Logger::Info("Initializing renderer...");
     renderer = new ChessRenderer(window);
     renderer->Initialize();
 

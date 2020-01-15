@@ -182,32 +182,39 @@ void ChessRenderer::DrawSelection(glm::mat4 mat) {
     DrawPiece(selectedPiece);
     fbo2->Unbind();
 
+    // To draw the outline, don't write to the depth buffer
+    // we don't want the outline to obstruct anything
     glDisable(GL_CULL_FACE);
     glDepthMask(false);
 
     Postproc::Start();
 
+    // Horizontal blur pass
     hGaussShader->Bind();
     hGaussShader->SetTargetWidth(fbo3->GetWidth());
     Postproc::Copy(fbo, fbo3);
 
+    // Vertical blur pass
     vGaussShader->Bind();
     vGaussShader->SetTargetHeight(viewportSize.y);
+
+    // Hack, apply it multiple times to make it larger
     for (int i = 0; i < 5; i++)
         Postproc::Copy(fbo3, nullptr);
 
+    // Put the piece on top of the outline
     copyShader->Bind();
     Postproc::Copy(fbo2, nullptr);
-    glDepthMask(true);
-
     Postproc::Stop();
 
+    // Restore OpenGL state
+    glDepthMask(true);
     glEnable(GL_CULL_FACE);
 }
 
 
 void ChessRenderer::DrawPiece(Piece *piece) {
-    // Goal: White is reflective, black is glassy
+    // Goal: White is white reflective, black is dark glassy
 
     pieceShader->SetDiffuseColor(
             piece->team == Team::White ? glm::vec3(1.0f, 1.0f, 1.0f) : glm::vec3(0.15f, 0.15f, 0.15f));
@@ -224,6 +231,11 @@ void ChessRenderer::DrawPiece(Piece *piece) {
     PieceRegistry::GetModel(piece->type)->Render();
 }
 
+/**
+ * Draws the row of captured pieces on the side of the board
+ *
+ * @param team The team for which to render
+ */
 void ChessRenderer::DrawCaptured(Team team) {
     int x = team == Team::White ? 9 : -2;
     int y = 0;
@@ -243,6 +255,11 @@ void ChessRenderer::DrawCaptured(Team team) {
     }
 }
 
+/**
+ * Compute the model matrix for a given piece to display it correctly
+ * @param piece The piece
+ * @return The matrix
+ */
 glm::mat4 ChessRenderer::GetModelMatrix(Piece *piece) {
     if (piece->type == PieceType::Knight || piece->type == PieceType::King) {
         float rot = glm::radians(piece->team == Team::White ? -90.f : 90.f);
